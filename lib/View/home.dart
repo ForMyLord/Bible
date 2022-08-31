@@ -11,159 +11,188 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
 
-  String bibleTitle = "창세기";
+  String bibleTitle = "창세기"; // 성경 키워드
 
   String searchText = ""; // 검색 텍스트
   final TextEditingController _textController = TextEditingController(); // TextController 만들기
 
   bool showSearchPreview = false; // 연관 검색어 보여주는데 필요한 bool 값
-
-  int chapterLength = 50; // 말씀 장 길이
-
-  List<int> bibleChapter = []; // Card로 찍어내기 위한 배열 선언
-  List<int> biblePassage = [];
+  double showSearchHeight = 0;
 
   int bibleLength = 50; // 장 길이
   int passageLength = 20;
-
   int sendBibleChapter = 0;
-
-  bool setVerse = false; // 다이얼로그 장에서 절로 넘어가는지 확인
-
-  getChapter(){
-    for(int i = 1; i <= chapterLength ; i++){
-      bibleChapter.add(i);
-    }
-  }
-
-  @override
-  void initState() {
-    getChapter();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bible'),
+        title: const Text('Bible',style: TextStyle(color: Colors.black),),
+        backgroundColor: Colors.white,
+        elevation: 0,
       ),
-      body: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height*0.08,
-            child: const Center(
-              child: Text("광고"),
-            )
-          ),
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        color: Colors.white24,
+        child: Column(
+          children: [
+            Material(
+                elevation:2,
+                borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)),
+                child: Container(
+                  child: Column(
+                    children: [
+                      Container(
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+                              child: TextField(
+                                style: const TextStyle(
+                                    fontSize: 20
+                                ),
+                                controller: _textController,
+                                onChanged: (value){
 
-          Expanded(
-            flex: 4,
-            child:SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                  const Text('말씀 검색'),
-                  const SizedBox(height: 10,),
-                  TextField(
-                    controller: _textController,
-                    onChanged: (value){
-                      if(!showSearchPreview){
-                        setState((){
-                          showSearchPreview = true;
-                        });
-                      }
+                                  if(value.contains(" ")){
+                                      _textController.text = value.replaceAll(" ", ""); // 띄어쓰기 발견시 제거하기
+                                      _textController.selection = TextSelection.fromPosition(TextPosition(offset: _textController.text.length)); // textfield 값 변경후, 단어 맨 뒤로 포커싱 해주기
+                                  }
 
-                      // 검색창이 띄어쓰기, 비어있는 경우 아무런 조치 취해주지 않기
-                      if(_textController.text.isEmpty||_textController.text.codeUnits.contains(32)){
-                        setState((){
-                          showSearchPreview = false;
-                        });
-                      }
-                      },
-                                autofocus: true,
+                                  if(!showSearchPreview){
+                                    setState((){
+                                      showSearchPreview = true;
+                                      showSearchHeight = 50.0*bible_list.length;
+                                    });
+                                  }
+
+                                  // 검색창이 띄어쓰기, 비어있는 경우 아무런 조치 취해주지 않기
+                                  if(_textController.text.isEmpty||_textController.text.codeUnits.contains(32)){
+                                    setState((){
+                                      showSearchPreview = false;
+                                    });
+                                  }
+                                },
+                                autofocus: false,
                                 textAlignVertical: TextAlignVertical.center,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.black12,
+                                    contentPadding: const EdgeInsets.all(0),
+                                    prefixIcon: const Icon(Icons.search,color: Colors.black,),
+                                    suffixIcon: IconButton(
+                                      onPressed: () {
+                                        setState((){
+                                          _textController.clear();
+                                          showSearchPreview = false;
+                                        });
+                                      },
+                                      icon: const Icon(Icons.close,color: Colors.black,),
+                                    ),
                                     hintText: '찾기',
-                                    border: OutlineInputBorder(
-                                      //borderRadius: BorderRadius.all(Radius.circular(30.0))
+                                    border: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                                        borderSide: BorderSide(color: Colors.black12)
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.black12),
+                                        borderRadius: BorderRadius.all(Radius.circular(30.0))
                                     )
                                 ),
                               ),
-                  Container(
-                    height: 100,
-                    child: showSearchPreview?
-                    Scrollbar(
-                      child: ListView.builder(
-                          itemCount: bible_list.length,
-                          itemBuilder: (BuildContext context, int index){
-                        return Center(
-                          child: GestureDetector(
-                              child: Text('${bible_list[index]}'),
-                              onTap: (){
-                                bibleTitle = bible_list[index];
-                                showDialog(context: context, builder: (BuildContext context){
-                                  return Dialog( // 장을 선택할 수 있는 Dialog
-                                    child:GridView.extent(
-                                      maxCrossAxisExtent: 60,
-                                      children: [
-                                        for(int i = 0; i < bibleLength; i++)  GestureDetector(
-                                          child: Card(
-                                            elevation: 2.0,
-                                            child: Center(
-                                                child: Text('${bibleChapter[i]}장')
+                            ),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 150),
+                              height: showSearchPreview?showSearchHeight:0,
+                              child: Scrollbar(
+                                  child: ListView.builder(
+                                      itemCount: bible_list.length,
+                                      itemBuilder: (BuildContext context, int index){
+                                        return GestureDetector(
+                                            child: Padding(
+                                              padding: const EdgeInsets.fromLTRB(25, 10, 10, 10),
+                                              child: Text(bible_list[index],style: const TextStyle(fontSize: 20),),
                                             ),
-                                          ),
-                                          onTap: (){
-                                            setState((){
-                                              setVerse = true;
-                                            });
-                                            showDialog(context: context, builder: (BuildContext context){
-                                              return Dialog( // 절을 선택할 수 있는 Dialog
-                                                child: GridView.extent(maxCrossAxisExtent: 60,
-                                                  children: [
-                                                    for(int j = 0; j < bibleLength; j++)  GestureDetector(
-                                                      child: Card(
-                                                        elevation: 2.0,
-                                                        child: Center(
-                                                            child: Text('${bibleChapter[j]}절')
+                                            onTap: (){
+                                              bibleTitle = bible_list[index];
+                                              showDialog(context: context, builder: (BuildContext context){
+                                                return Dialog(// 장을 선택할 수 있는 Dialog
+                                                  child:GridView.extent(
+                                                    maxCrossAxisExtent: 80,
+                                                    children: [
+                                                      for(int i = 0; i < bibleLength; i++)  GestureDetector(
+                                                        child: Card(
+                                                          elevation: 3.0,
+                                                          child: Center(
+                                                              child: Text('${i+1}장',style: const TextStyle(
+                                                                  fontSize: 20
+                                                              ),)
+                                                          ),
                                                         ),
-                                                      ),
-                                                      onTap: (){
-                                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => Bible(bibleChapter: i, biblePassenger: j,bibleTitle: bibleTitle,)));
-                                                      },
-                                                    )
-                                                  ],),
-                                              );
-                                            });
-                                          },
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                });
-                              }
-                          ),
-                        );
-                      }),
-                    ):const Text("아무것도 없어요")
+                                                        onTap: (){
+                                                          showDialog(context: context, builder: (BuildContext context){
+                                                            return Dialog(
+                                                              elevation: 1.0,// 절을 선택할 수 있는 Dialog
+                                                              child: GridView.extent(maxCrossAxisExtent: 80,
+                                                                children: [
+                                                                  for(int j = 0; j < bibleLength; j++)  GestureDetector(
+                                                                    child: Card(
+                                                                      elevation: 3.0,
+                                                                      child: Center(
+                                                                          child: Text('${j+1}절', style: const TextStyle(
+                                                                              fontSize: 20
+                                                                          ),)
+                                                                      ),
+                                                                    ),
+                                                                    onTap: (){
+                                                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => Bible(bibleChapter: i, biblePassenger: j,bibleTitle: bibleTitle,)));
+                                                                    },
+                                                                  )
+                                                                ],),
+                                                            );
+                                                          },barrierColor: Colors.black12.withOpacity(0.0));
+                                                        },
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              },barrierColor: Colors.black12.withOpacity(0.5));
+                                            }
+                                        );
+                                      }),
+                                ),
+                            ),
+                          ],
+                        ),
+                      ),
+                        ],
                   )
-                    ],
-              )
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
+                ),
+              ),
+            Container(
+              height: MediaQuery.of(context).size.height*0.5,
+              margin: const EdgeInsets.fromLTRB(10,15,10,0),
               width: MediaQuery.of(context).size.width,
-              child: const Text('북마크 말씀'),
-            ),
-          )
-        ],
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 1,
+                    blurRadius: 15,
+                    offset: const Offset(0,10)
+                  )
+                ],
+                borderRadius: BorderRadius.circular(30),
+                color: Colors.white
+              ),
+              child: const Center(
+                child: Text("북마크"),
+              )
+              )
+          ],
+        ),
       ),
     );
   }
 }
-

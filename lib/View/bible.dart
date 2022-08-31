@@ -25,11 +25,9 @@ class _BibleState extends State<Bible> {
 
     double c_width = MediaQuery.of(context).size.width*0.95;
 
-    print(widget.bible["1장"]?.length);
-
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.bibleTitle} ${widget.bibleChapter+1} 장 ${widget.biblePassenger+1} 절"),
+        title: Text("${widget.bibleTitle} ${widget.bibleChapter+1} 장"),
       ),
       body: SafeArea(
         child: Container(
@@ -41,7 +39,7 @@ class _BibleState extends State<Bible> {
                     fontSize: 20
                 ),textAlign: TextAlign.left),
               );
-            }),
+            },initialScrollIndex: widget.biblePassenger)
           ),
         ),
       );
