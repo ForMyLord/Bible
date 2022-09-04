@@ -1,13 +1,14 @@
 import 'package:bible/Model/bible_list.dart';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'dart:convert';
 
 class Bible extends StatefulWidget {
 
   final int bibleChapter;
   final int biblePassenger;
   final String bibleTitle;
-  final Map<String,Map<String,String>> bible = genesis;
+  final Map<String,dynamic> bible = genesis;
 
   Bible({required this.bibleChapter, required this.biblePassenger, required this.bibleTitle});
 
@@ -25,17 +26,28 @@ class _BibleState extends State<Bible> {
 
     double c_width = MediaQuery.of(context).size.width*0.95;
 
+    List<Object> data = widget.bible["${widget.bibleChapter+1}장"];
+    int chapterLength = widget.bible["${widget.bibleChapter+1}장"].length;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.bibleTitle} ${widget.bibleChapter+1} 장"),
+        title: Text("${widget.bibleTitle} ${widget.bibleChapter+1} 장",style: const TextStyle(color: Colors.black),),
+        iconTheme: const IconThemeData(
+          color: Colors.black
+        ),
+        backgroundColor: Colors.white,
       ),
       body: SafeArea(
         child: Container(
           width: c_width,
-            child: ScrollablePositionedList.builder(itemCount: widget.bible["1장"]!.length, itemBuilder: (context,index){
+            child: ScrollablePositionedList.builder(itemCount: chapterLength, itemBuilder: (context,index){
+
+              int verse = jsonDecode(json.encode(data[index]))["verse"];
+              String content = jsonDecode(json.encode(data[index]))["content"];
+
               return Container(
                 padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                child: Text("${index+1}절  ${widget.bible["1장"]!["${index+1}절"]}",style: const TextStyle(
+                child: Text("$verse절  $content",style: const TextStyle(
                     fontSize: 20
                 ),textAlign: TextAlign.left),
               );

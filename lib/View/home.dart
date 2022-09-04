@@ -15,24 +15,29 @@ class _HomepageState extends State<Homepage> {
 
   String searchText = ""; // 검색 텍스트
   final TextEditingController _textController = TextEditingController(); // TextController 만들기
+  final PageController _pageController = PageController(initialPage: 0);
+
+  int currentPage = 0;
 
   bool showSearchPreview = false; // 연관 검색어 보여주는데 필요한 bool 값
   double showSearchHeight = 0;
 
-  int bibleLength = 50; // 장 길이
-  int passageLength = 20;
-  int sendBibleChapter = 0;
+  Map<String,dynamic> bible = genesis; // 입력값에 따라 다른 클래스 지정
+
+  int bibleLength = genesis.length; // 장 길이
 
   @override
   Widget build(BuildContext context) {
+
+    double deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Bible',style: TextStyle(color: Colors.black),),
         backgroundColor: Colors.white,
-        elevation: 0,
-      ),
-      resizeToAvoidBottomInset: false,
+          elevation: 0,
+        ),
+        resizeToAvoidBottomInset: false,
       body: Container(
         color: Colors.white24,
         child: Column(
@@ -54,7 +59,6 @@ class _HomepageState extends State<Homepage> {
                                 ),
                                 controller: _textController,
                                 onChanged: (value){
-
                                   if(value.contains(" ")){
                                       _textController.text = value.replaceAll(" ", ""); // 띄어쓰기 발견시 제거하기
                                       _textController.selection = TextSelection.fromPosition(TextPosition(offset: _textController.text.length)); // textfield 값 변경후, 단어 맨 뒤로 포커싱 해주기
@@ -90,15 +94,19 @@ class _HomepageState extends State<Homepage> {
                                       },
                                       icon: const Icon(Icons.close,color: Colors.black,),
                                     ),
-                                    hintText: '찾기',
+                                    hintText: '초성입력',
                                     border: const OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
                                         borderSide: BorderSide(color: Colors.black12)
                                     ),
                                     focusedBorder: const OutlineInputBorder(
                                         borderSide: BorderSide(color: Colors.black12),
-                                        borderRadius: BorderRadius.all(Radius.circular(30.0))
-                                    )
+                                        borderRadius: BorderRadius.all(Radius.circular(20.0))
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                                      borderSide: BorderSide(color: Colors.black12),
+                                    ),
                                 ),
                               ),
                             ),
@@ -115,7 +123,6 @@ class _HomepageState extends State<Homepage> {
                                               child: Text(bible_list[index],style: const TextStyle(fontSize: 20),),
                                             ),
                                             onTap: (){
-                                              bibleTitle = bible_list[index];
                                               showDialog(context: context, builder: (BuildContext context){
                                                 return Dialog(// 장을 선택할 수 있는 Dialog
                                                   child:GridView.extent(
@@ -131,12 +138,15 @@ class _HomepageState extends State<Homepage> {
                                                           ),
                                                         ),
                                                         onTap: (){
+
+                                                          int verseLength = bible["${i+1}장"].length;
+
                                                           showDialog(context: context, builder: (BuildContext context){
                                                             return Dialog(
                                                               elevation: 1.0,// 절을 선택할 수 있는 Dialog
                                                               child: GridView.extent(maxCrossAxisExtent: 80,
                                                                 children: [
-                                                                  for(int j = 0; j < bibleLength; j++)  GestureDetector(
+                                                                  for(int j = 0; j < verseLength ; j++)  GestureDetector(
                                                                     child: Card(
                                                                       elevation: 3.0,
                                                                       child: Center(
@@ -171,25 +181,61 @@ class _HomepageState extends State<Homepage> {
                 ),
               ),
             Container(
-              height: MediaQuery.of(context).size.height*0.5,
-              margin: const EdgeInsets.fromLTRB(10,15,10,0),
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 15,
-                    offset: const Offset(0,10)
-                  )
+              margin: const EdgeInsets.fromLTRB(20, 20, 0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const [
+                  Text("북마크 말씀",style: TextStyle(
+                      fontSize: 25, fontWeight: FontWeight.bold
+                  ),),
                 ],
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.white
               ),
-              child: const Center(
-                child: Text("북마크"),
-              )
-              )
+            ),
+            SizedBox(
+                    height: MediaQuery.of(context).size.height*0.2,
+                    width: MediaQuery.of(context).size.width,
+                    child:PageView.builder(itemBuilder: (context,index){
+                        return Container(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 10, 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 13,),
+                              Container(
+                                width: deviceWidth*0.8,
+                                child: const Text("너는 기도할 때에 네 골방에 들어가 문을닫고 은밀한 중에 계신 네 아버지께 기도하라 은밀한 중에 보시는 네 아버지께서 갚으시리라",style: TextStyle(fontSize: 20),),
+                              ),
+                              const SizedBox(height: 7,),
+                              const Text("마태복음 6:6 KRV",style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),)
+                            ],
+                          ),
+                        );
+                      },controller: _pageController,
+                      itemCount: 5,onPageChanged: (page){
+                        setState((){
+                          currentPage = page;
+                        });
+                      },)
+                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                for(num i = 0; i<5; i++)
+                  Container(
+                    width: 5,
+                    height: 5,
+                    margin: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: i == currentPage? Colors.black : Colors.black.withOpacity(0.2),
+                    )
+                  )
+              ],
+            ),
+            const Divider(
+              color: Colors.black,
+              thickness: 0.2 ,
+            )
           ],
         ),
       ),
