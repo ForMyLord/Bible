@@ -13,7 +13,6 @@ class _HomepageState extends State<Homepage> {
 
   String bibleTitle = "창세기"; // 성경 키워드
 
-  String searchText = ""; // 검색 텍스트
   final TextEditingController _textController = TextEditingController(); // TextController 만들기
   final PageController _pageController = PageController(initialPage: 0);
 
@@ -26,10 +25,13 @@ class _HomepageState extends State<Homepage> {
 
   int bibleLength = genesis.length; // 장 길이
 
+  List<String> search_list = [];
+
   @override
   Widget build(BuildContext context) {
 
     double deviceWidth = MediaQuery.of(context).size.width;
+    double deviceHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(
@@ -59,24 +61,53 @@ class _HomepageState extends State<Homepage> {
                                 ),
                                 controller: _textController,
                                 onChanged: (value){
+
                                   if(value.contains(" ")){
                                       _textController.text = value.replaceAll(" ", ""); // 띄어쓰기 발견시 제거하기
                                       _textController.selection = TextSelection.fromPosition(TextPosition(offset: _textController.text.length)); // textfield 값 변경후, 단어 맨 뒤로 포커싱 해주기
                                   }
 
-                                  if(!showSearchPreview){
-                                    setState((){
-                                      showSearchPreview = true;
-                                      showSearchHeight = 50.0*bible_list.length;
-                                    });
-                                  }
-
                                   // 검색창이 띄어쓰기, 비어있는 경우 아무런 조치 취해주지 않기
-                                  if(_textController.text.isEmpty||_textController.text.codeUnits.contains(32)){
+                                  if(value.isEmpty){
                                     setState((){
                                       showSearchPreview = false;
                                     });
                                   }
+
+                                  if(value.codeUnits.contains(32)){
+                                    if(search_list.isEmpty){
+                                      setState((){
+                                        showSearchPreview = false;
+                                      });
+                                    }
+                                    return;
+                                  }
+
+                                  search_list = [];
+
+                                  bible_list.forEach((item) => {
+                                    if(item.values.first.contains(value)){
+
+                                      if(!search_list.contains(item.keys.first)){
+                                        setState((){
+                                            search_list.add(item.keys.first);
+                                            showSearchPreview = true;
+
+                                            if(search_list.length>10){
+                                              showSearchHeight = deviceHeight*0.5;
+                                            }else{
+                                              showSearchHeight = 50.0*search_list.length;
+                                            }
+                                        })
+                                      }
+
+                                    }else if(search_list.isEmpty){ // 포함된 단어가 없는 경우
+                                      setState((){
+                                        showSearchPreview = false;
+                                      })
+                                    }
+                                  });
+
                                 },
                                 autofocus: false,
                                 textAlignVertical: TextAlignVertical.center,
@@ -114,15 +145,19 @@ class _HomepageState extends State<Homepage> {
                               duration: const Duration(milliseconds: 150),
                               height: showSearchPreview?showSearchHeight:0,
                               child: Scrollbar(
-                                  child: ListView.builder(
-                                      itemCount: bible_list.length,
+                                  child: ListView.builder( // 검색어 자동완성
+                                      itemCount: search_list.length,
                                       itemBuilder: (BuildContext context, int index){
                                         return GestureDetector(
                                             child: Padding(
                                               padding: const EdgeInsets.fromLTRB(25, 10, 10, 10),
-                                              child: Text(bible_list[index],style: const TextStyle(fontSize: 20),),
+                                              child: Text(search_list[index],style: const TextStyle(fontSize: 20),),
                                             ),
                                             onTap: (){
+                                              setState((){
+                                                bibleTitle = search_list[index];
+                                              });
+
                                               showDialog(context: context, builder: (BuildContext context){
                                                 return Dialog(// 장을 선택할 수 있는 Dialog
                                                   child:GridView.extent(
@@ -138,9 +173,7 @@ class _HomepageState extends State<Homepage> {
                                                           ),
                                                         ),
                                                         onTap: (){
-
                                                           int verseLength = bible["${i+1}장"].length;
-
                                                           showDialog(context: context, builder: (BuildContext context){
                                                             return Dialog(
                                                               elevation: 1.0,// 절을 선택할 수 있는 Dialog
