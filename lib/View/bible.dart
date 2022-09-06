@@ -25,6 +25,7 @@ class _BibleState extends State<Bible> {
   Widget build(BuildContext context) {
 
     double c_width = MediaQuery.of(context).size.width*0.95;
+    double media_width = MediaQuery.of(context).size.width;
 
     List<Object> data = widget.bible["${widget.bibleChapter+1}장"];
     int chapterLength = widget.bible["${widget.bibleChapter+1}장"].length;
@@ -47,9 +48,18 @@ class _BibleState extends State<Bible> {
 
               return Container(
                 padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                child: Text("$verse절  $content",style: const TextStyle(
-                    fontSize: 20
-                ),textAlign: TextAlign.left),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: media_width*0.85,
+                      child: Text("$verse절  $content",style: const TextStyle(
+                          fontSize:20,
+                      ),
+                      ),
+                    )
+                  ],
+                ),
               );
             },initialScrollIndex: widget.biblePassenger)
           ),
