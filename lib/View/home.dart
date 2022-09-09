@@ -1,4 +1,5 @@
-import 'package:bible/View/bible.dart';
+import 'package:bible/Utils/getChapter.dart';
+import 'package:bible/View/select_chapter.dart';
 import 'package:flutter/material.dart';
 import '../Model/bible_list.dart';
 
@@ -158,49 +159,12 @@ class _HomepageState extends State<Homepage> {
                                                 bibleTitle = search_list[index];
                                               });
 
-                                              showDialog(context: context, builder: (BuildContext context){
-                                                return Dialog(// 장을 선택할 수 있는 Dialog
-                                                  child:GridView.extent(
-                                                    maxCrossAxisExtent: 80,
-                                                    children: [
-                                                      for(int i = 0; i < bibleLength; i++)  GestureDetector(
-                                                        child: Card(
-                                                          elevation: 3.0,
-                                                          child: Center(
-                                                              child: Text('${i+1}장',style: const TextStyle(
-                                                                  fontSize: 20
-                                                              ),)
-                                                          ),
-                                                        ),
-                                                        onTap: (){
-                                                          int verseLength = bible["${i+1}장"].length;
-                                                          showDialog(context: context, builder: (BuildContext context){
-                                                            return Dialog(
-                                                              elevation: 1.0,// 절을 선택할 수 있는 Dialog
-                                                              child: GridView.extent(maxCrossAxisExtent: 80,
-                                                                children: [
-                                                                  for(int j = 0; j < verseLength ; j++)  GestureDetector(
-                                                                    child: Card(
-                                                                      elevation: 3.0,
-                                                                      child: Center(
-                                                                          child: Text('${j+1}절', style: const TextStyle(
-                                                                              fontSize: 20
-                                                                          ),)
-                                                                      ),
-                                                                    ),
-                                                                    onTap: (){
-                                                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => Bible(bibleChapter: i, biblePassenger: j,bibleTitle: bibleTitle,)));
-                                                                    },
-                                                                  )
-                                                                ],),
-                                                            );
-                                                          },barrierColor: Colors.black12.withOpacity(0.0));
-                                                        },
-                                                      )
-                                                    ],
-                                                  ),
-                                                );
-                                              },barrierColor: Colors.black12.withOpacity(0.5));
+                                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SelectBibleChapter(bibleTitle: bibleTitle,chapterLength: getChapter(bibleTitle),)));
+                                              _textController.clear();
+                                              setState((){
+                                                search_list = [];
+                                                showSearchPreview = false;
+                                              });
                                             }
                                         );
                                       }),
