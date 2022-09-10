@@ -1,5 +1,6 @@
 import 'package:bible/Model/bible_list.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'dart:convert';
 
@@ -155,8 +156,8 @@ class _BibleState extends State<Bible> {
                                   actions: [
                                     TextButton(onPressed: (){
                                       Navigator.pop(context);
-                                      BookMark bookMark = BookMark(id: 1 , bible: bibleTitle, chapter: bibleChapter, verse:biblePassenger, setTime: DateTime.now().toString());
-                                      saveDB(bookMark);
+                                      BookMark bookMark = BookMark(bible: bibleTitle, chapter: bibleChapter, verse:index+1, setTime: DateTime.now().toString(),content: content);
+                                      saveDB(bookMark,context);
                                     }, child: const Text("확인")),
                                     TextButton(onPressed: (){
                                       Navigator.pop(context);
@@ -182,24 +183,21 @@ class _BibleState extends State<Bible> {
       );
   }
 
-  Future<void> saveDB(BookMark bookMark) async {
+  Future<void> saveDB(BookMark bookMark, BuildContext context) async {
     DBHelper dh = DBHelper();
 
     var data = BookMark(
-      id: bookMark.id,
       bible: bookMark.bible,
       chapter: bookMark.chapter,
       verse: bookMark.verse,
-      setTime: bookMark.setTime
+      setTime: bookMark.setTime,
+      content: bookMark.content
     );
 
     await dh.insertBookMark(data);
 
-    dynamic result = await dh.getBookMark();
+    List<Map<String,dynamic>> results = await dh.queryAll();
 
-    result.forEach((value) => {
-
-    })
-
+    print(results);
   }
 }

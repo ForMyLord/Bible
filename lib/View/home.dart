@@ -1,6 +1,9 @@
+import 'package:bible/Database/db.dart';
 import 'package:bible/Utils/getChapter.dart';
 import 'package:bible/View/select_chapter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sqflite/sqflite.dart';
 import '../Model/bible_list.dart';
 
 class Homepage extends StatefulWidget {
@@ -27,6 +30,24 @@ class _HomepageState extends State<Homepage> {
   int bibleLength = genesis.length; // 장 길이
 
   List<String> search_list = [];
+
+
+  late List<Map<String,dynamic>> results = [];
+  late DBHelper dh;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    dh = DBHelper();
+    getDatabase();
+  }
+
+
+  Future<void> getDatabase() async{
+    results = await dh.queryAll();
+    print(results);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -191,48 +212,61 @@ class _HomepageState extends State<Homepage> {
             SizedBox(
                     height: MediaQuery.of(context).size.height*0.2,
                     width: MediaQuery.of(context).size.width,
-                    child:PageView.builder(itemBuilder: (context,index){
-                        return Container(
-                          padding: const EdgeInsets.fromLTRB(20, 0, 10, 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 13,),
-                              Container(
-                                width: deviceWidth*0.8,
-                                child: const Text("너는 기도할 때에 네 골방에 들어가 문을닫고 은밀한 중에 계신 네 아버지께 기도하라 은밀한 중에 보시는 네 아버지께서 갚으시리라",style: TextStyle(fontSize: 20),),
-                              ),
-                              const SizedBox(height: 7,),
-                              const Text("마태복음 6:6 KRV",style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),)
-                            ],
-                          ),
-                        );
-                      },controller: _pageController,
-                      itemCount: 5,onPageChanged: (page){
+                    child: results.isNotEmpty ?
+                    PageView.builder(itemBuilder: (context,index){
+                      return Container(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 10, 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 13,),
+                            Container(
+                              width: deviceWidth*0.8,
+                              child: Text("${results[index]['content']}",style: const TextStyle(fontSize: 20),),
+                            ),
+                            const SizedBox(height: 7,),
+                            Text("${results[index]['bible']} ${results[index]['chapter']}:${results[index]['verse']} KRV",style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),)
+                          ],
+                        ),
+                      );
+                    },controller: _pageController,
+                      itemCount: results.length,onPageChanged: (page){
                         setState((){
                           currentPage = page;
                         });
-                      },)
+                      },):
+                        Container(
+                          child: const Text("아직 북마크한 말씀이 없습니다"),
+                        )
                     ),
-            Row(
+            results.length > 0 ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                for(num i = 0; i<5; i++)
+                for(num i = 0; i<results.length; i++)
                   Container(
-                    width: 5,
-                    height: 5,
-                    margin: const EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: i == currentPage? Colors.black : Colors.black.withOpacity(0.2),
-                    )
+                      width: 5,
+                      height: 5,
+                      margin: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: i == currentPage? Colors.black : Colors.black.withOpacity(0.2),
+                      )
                   )
               ],
-            ),
+            ):Container(),
             const Divider(
               color: Colors.black,
               thickness: 0.2 ,
-            )
+            ),
+            ElevatedButton(onPressed: () async{
+              Database db = await openDatabase('bookmark.db');
+              DBHelper dh = DBHelper();
+
+              db.delete('bookmark');
+              
+              print('데이터 초기화');
+              
+            }, child: Text("데이터 초기화"))
           ],
         ),
       ),

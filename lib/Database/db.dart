@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../Model/bookmark.dart';
 
 const String tableName = 'bookmark';
 
-class DBHelper {
+class DBHelper with ChangeNotifier {
   var _db;
 
   Future<Database> get database async {
@@ -15,12 +16,13 @@ class DBHelper {
 
       onCreate: (db,version){
         return db.execute(
-          "CREATE TABLE bookmark(id INTEGER PRIMARY KEY, bible TEXT, chapter INTEGER, verse INTEGER, setTime TEXT)"
+          "CREATE TABLE bookmark(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, bible TEXT, chapter INTEGER, verse INTEGER, setTime TEXT, content TEXT)"
         );
       },
       version: 1
     );
 
+    notifyListeners();
     return _db;
   }
 
@@ -32,6 +34,8 @@ class DBHelper {
       bookMark.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace // 동일한 데이터 여러번 추가시, 이전 데이터 덮어쓰기
     );
+
+    notifyListeners();
   }
 
   Future<List<BookMark>> getBookMark() async {
@@ -41,11 +45,11 @@ class DBHelper {
 
     return List.generate(bookmarks.length, (i){
       return BookMark(
-          id: bookmarks[i]['id'],
           bible: bookmarks[i]['bible'],
           chapter: bookmarks[i]['chapter'],
           verse: bookmarks[i]['verse'],
-          setTime: bookmarks[i]['setTime']
+          setTime: bookmarks[i]['setTime'],
+          content: bookmarks[i]['content']
       );
     });
   }
@@ -58,5 +62,15 @@ class DBHelper {
       where: "id = ?",
       whereArgs: [id],
     );
+
+    notifyListeners();
+  }
+
+  Future<List<Map<String,dynamic>>> queryAll() async {
+    Database db = await database;
+
+    List<Map<String,dynamic>> results = await db.query('bookmark');
+
+    return results;
   }
 }
