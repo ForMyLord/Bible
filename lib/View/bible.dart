@@ -1,4 +1,5 @@
 import 'package:bible/Model/bible_list.dart';
+import 'package:bible/Provider/BookMarkList.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -198,6 +199,6 @@ class _BibleState extends State<Bible> {
 
     List<Map<String,dynamic>> results = await dh.queryAll();
 
-    print(results);
+    context.read<BookMarkList>().setData(results);
   }
 }

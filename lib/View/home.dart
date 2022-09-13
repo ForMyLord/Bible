@@ -1,4 +1,5 @@
 import 'package:bible/Database/db.dart';
+import 'package:bible/Provider/BookMarkList.dart';
 import 'package:bible/Utils/getChapter.dart';
 import 'package:bible/View/select_chapter.dart';
 import 'package:flutter/material.dart';
@@ -40,13 +41,11 @@ class _HomepageState extends State<Homepage> {
     // TODO: implement initState
     super.initState();
     dh = DBHelper();
-    getDatabase();
   }
 
-
-  Future<void> getDatabase() async{
+  Future<void> getDatabase(BuildContext context) async{
     results = await dh.queryAll();
-    print(results);
+    context.read<BookMarkList>().setData(results);
   }
 
   @override
@@ -54,6 +53,10 @@ class _HomepageState extends State<Homepage> {
 
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
+
+    if(context.read<BookMarkList>().results.length>=0){
+      getDatabase(context);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -212,7 +215,7 @@ class _HomepageState extends State<Homepage> {
             SizedBox(
                     height: MediaQuery.of(context).size.height*0.2,
                     width: MediaQuery.of(context).size.width,
-                    child: results.isNotEmpty ?
+                    child: context.watch<BookMarkList>().results.isNotEmpty ?
                     PageView.builder(itemBuilder: (context,index){
                       return Container(
                         padding: const EdgeInsets.fromLTRB(20, 0, 10, 10),
@@ -222,27 +225,25 @@ class _HomepageState extends State<Homepage> {
                             const SizedBox(height: 13,),
                             Container(
                               width: deviceWidth*0.8,
-                              child: Text("${results[index]['content']}",style: const TextStyle(fontSize: 20),),
+                              child: Text("${context.watch<BookMarkList>().results[index]["content"]}",style: const TextStyle(fontSize: 18),),
                             ),
                             const SizedBox(height: 7,),
-                            Text("${results[index]['bible']} ${results[index]['chapter']}:${results[index]['verse']} KRV",style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),)
+                            Text("${context.watch<BookMarkList>().results[index]['bible']} ${context.watch<BookMarkList>().results[index]['chapter']}:${context.watch<BookMarkList>().results[index]['verse']} KRV",style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),)
                           ],
                         ),
                       );
                     },controller: _pageController,
-                      itemCount: results.length,onPageChanged: (page){
+                      itemCount: context.watch<BookMarkList>().results.length,onPageChanged: (page){
                         setState((){
                           currentPage = page;
                         });
                       },):
-                        Container(
-                          child: const Text("아직 북마크한 말씀이 없습니다"),
-                        )
+                        const Text("아직 북마크한 말씀이 없습니다")
                     ),
-            results.length > 0 ? Row(
+            context.watch<BookMarkList>().results.length > 1 ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                for(num i = 0; i<results.length; i++)
+                for(num i = 0; i<context.watch<BookMarkList>().results.length; i++)
                   Container(
                       width: 5,
                       height: 5,
@@ -260,13 +261,10 @@ class _HomepageState extends State<Homepage> {
             ),
             ElevatedButton(onPressed: () async{
               Database db = await openDatabase('bookmark.db');
-              DBHelper dh = DBHelper();
 
               db.delete('bookmark');
-              
-              print('데이터 초기화');
-              
-            }, child: Text("데이터 초기화"))
+
+            }, child: const Text("데이터 초기화"))
           ],
         ),
       ),
