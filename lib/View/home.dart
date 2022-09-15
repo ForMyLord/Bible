@@ -33,7 +33,7 @@ class _HomepageState extends State<Homepage> {
   List<String> search_list = [];
 
 
-  late List<Map<String,dynamic>> results = [];
+  List<Map<String,dynamic>> results = [];
   late DBHelper dh;
 
   @override
@@ -41,6 +41,7 @@ class _HomepageState extends State<Homepage> {
     // TODO: implement initState
     super.initState();
     dh = DBHelper();
+    getDatabase(context);
   }
 
   Future<void> getDatabase(BuildContext context) async{
@@ -54,24 +55,21 @@ class _HomepageState extends State<Homepage> {
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
 
-    if(context.read<BookMarkList>().results.length>=0){
-      getDatabase(context);
-    }
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bible',style: TextStyle(color: Colors.black),),
-        backgroundColor: Colors.white,
+        title: const Text('Bible',style: TextStyle(color: Color.fromRGBO(253, 250, 245, 1.0),fontWeight: FontWeight.bold),),
+        backgroundColor: const Color.fromRGBO(5, 35, 44, 1.0),
           elevation: 0,
         ),
         resizeToAvoidBottomInset: false,
       body: Container(
-        color: Colors.white24,
+        color: const Color.fromRGBO(253, 250, 245, 1.0),
         child: Column(
           children: [
             Material(
                 elevation:2,
                 borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)),
+                color: const Color.fromRGBO(5, 35, 44, 1.0),
                 child: Container(
                   child: Column(
                     children: [
@@ -138,7 +136,7 @@ class _HomepageState extends State<Homepage> {
                                 textAlignVertical: TextAlignVertical.center,
                                 decoration: InputDecoration(
                                     filled: true,
-                                    fillColor: Colors.black12,
+                                    fillColor: const Color.fromRGBO(253, 250, 245, 1.0),
                                     contentPadding: const EdgeInsets.all(0),
                                     prefixIcon: const Icon(Icons.search,color: Colors.black,),
                                     suffixIcon: IconButton(
@@ -176,7 +174,7 @@ class _HomepageState extends State<Homepage> {
                                         return GestureDetector(
                                             child: Padding(
                                               padding: const EdgeInsets.fromLTRB(25, 10, 10, 10),
-                                              child: Text(search_list[index],style: const TextStyle(fontSize: 20),),
+                                              child: Text(search_list[index],style: const TextStyle(fontSize: 20,color: Color.fromRGBO(253, 250, 245, 1.0)),),
                                             ),
                                             onTap: (){
                                               setState((){
@@ -203,12 +201,39 @@ class _HomepageState extends State<Homepage> {
               ),
             Container(
               margin: const EdgeInsets.fromLTRB(20, 20, 0, 0),
+              color: const Color.fromRGBO(253, 250, 245, 1.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: const [
-                  Text("북마크 말씀",style: TextStyle(
-                      fontSize: 25, fontWeight: FontWeight.bold
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text("북마크 말씀",style: TextStyle(
+                      fontSize: 25, fontWeight: FontWeight.bold,color: Color.fromRGBO(5, 35, 44, 1.0)
                   ),),
+                  IconButton(onPressed: (){
+                    showDialog(context: context, builder: (BuildContext context){
+                      return AlertDialog(
+                        title: const Text("북마크 취소하기"),
+                        content: const Text("북마크를 취소하시겠습니까"),
+                        actions: [
+                          TextButton(onPressed: () async{
+                            await getDatabase(context);
+                            int id = await results[currentPage]['id'];
+                            await dh.deleteBookMark(id);
+                            Navigator.pop(context);
+                            getDatabase(context);
+                            setState(() {
+                              currentPage = results.length-2;
+                            });
+                          },
+                            child: const Text("확인"),
+                          ),
+                          TextButton(onPressed: (){
+                            Navigator.pop(context);
+                          }, child: const Text("취소"))
+                        ],
+                      );
+                    });
+                  }, icon: const Icon(IconData(0xe0f1, fontFamily: 'MaterialIcons'),color: Colors.amber,))
                 ],
               ),
             ),
@@ -223,12 +248,12 @@ class _HomepageState extends State<Homepage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 13,),
-                            Container(
+                            SizedBox(
                               width: deviceWidth*0.8,
-                              child: Text("${context.watch<BookMarkList>().results[index]["content"]}",style: const TextStyle(fontSize: 18),),
+                              child: Text("${context.watch<BookMarkList>().results[index]["content"]}",style: const TextStyle(fontSize: 18,color: Color.fromRGBO(5, 35, 44, 1.0)),),
                             ),
                             const SizedBox(height: 7,),
-                            Text("${context.watch<BookMarkList>().results[index]['bible']} ${context.watch<BookMarkList>().results[index]['chapter']}:${context.watch<BookMarkList>().results[index]['verse']} KRV",style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),)
+                            Text("${context.watch<BookMarkList>().results[index]['bible']} ${context.watch<BookMarkList>().results[index]['chapter']+1}:${context.watch<BookMarkList>().results[index]['verse']} KRV",style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold,color: Color.fromRGBO(5, 35, 44, 1.0)),)
                           ],
                         ),
                       );
@@ -255,16 +280,10 @@ class _HomepageState extends State<Homepage> {
                   )
               ],
             ):Container(),
-            const Divider(
+            const Divider (
               color: Colors.black,
               thickness: 0.2 ,
             ),
-            ElevatedButton(onPressed: () async{
-              Database db = await openDatabase('bookmark.db');
-
-              db.delete('bookmark');
-
-            }, child: const Text("데이터 초기화"))
           ],
         ),
       ),

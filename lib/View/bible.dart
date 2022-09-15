@@ -57,12 +57,17 @@ class _BibleState extends State<Bible> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text("$bibleTitle ${bibleChapter+1} 장",style: const TextStyle(color: Colors.white),),
-        actions: [
-          IconButton(onPressed: (){
-            showModalBottomSheet(context: context, builder: (BuildContext context){
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(mediaHeight*0.02), child: Container(),
+        ),
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text("$bibleTitle ${bibleChapter+1} 장",style: const TextStyle(color:Color.fromRGBO(137, 136, 125, 1.0) , fontSize:25,fontWeight: FontWeight.w500),),
+            IconButton(onPressed: (){
+              showModalBottomSheet(context: context, builder: (BuildContext context){
                 return SizedBox(
-                    height: mediaHeight*0.6,
+                    height: mediaHeight*0.7,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
                       child: Column(
@@ -81,104 +86,134 @@ class _BibleState extends State<Bible> {
                           ),
                           SizedBox(
                             height: mediaHeight * 0.4 + 70,
-                            child: ListView.builder(itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                  margin: const EdgeInsets.only(bottom:20),
-                                  child:GestureDetector(
-                                    child:  Row(
-                                      children: [
-                                        Text(bibleTitle,style: const TextStyle(fontSize: 25,fontWeight: FontWeight.w600)),
-                                        const SizedBox(width: 20,),
-                                        Text("${index+1} 장", style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w600))
-                                      ],
-                                    ),
-                                    onTap: (){
-                                      Navigator.pop(context);
-                                      setState((){
-                                        bibleChapter = index;
-                                        data = bible!["${index+1}장"];
-                                        verseLength = bible!["${bibleChapter+1}장"].length;
-                                      });
-                                      itemScrollController.jumpTo(index: 0);
-                                    },
-                                  )
-                              );
-                            }, itemCount: bible!.length,
-                            ),
+                            child: ShaderMask(
+                              child: ListView.builder(itemBuilder: (BuildContext context, int index) {
+                                return Container(
+                                    margin: const EdgeInsets.only(bottom:20),
+                                    child:GestureDetector(
+                                      child:  Row(
+                                        children: [
+                                          Text(bibleTitle,style: const TextStyle(fontSize: 25,fontWeight: FontWeight.w600,color:Color.fromRGBO(5, 35, 44, 1.0))),
+                                          const SizedBox(width: 15,),
+                                          Text("${index+1} 장", style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w600,color:Color.fromRGBO(5, 35, 44, 1.0)))
+                                        ],
+                                      ),
+                                      onTap: (){
+                                        Navigator.pop(context);
+                                        setState((){
+                                          bibleChapter = index;
+                                          data = bible!["${index+1}장"];
+                                          verseLength = bible!["${bibleChapter+1}장"].length;
+                                        });
+                                        itemScrollController.jumpTo(index: 0);
+                                      },
+                                    )
+                                );
+                              }, itemCount: bible!.length,
+                              ), shaderCallback: (Rect bounds) {
+                              return LinearGradient( //아래 속성들을 조절하여 원하는 값을 얻을 수 있다.
+                                begin: Alignment.center,
+                                end: Alignment.topCenter,
+                                colors: [
+                                  Colors.white,
+                                  Colors.white.withOpacity(0.03)
+                                ],
+                                stops: const [0.95, 1],
+                                 tileMode: TileMode.mirror,
+                              ).createShader(bounds);
+                            },
+                            )
                           )
                         ],
                       ),
                     )
                 );
-            });
-          }, icon: const Icon(Icons.expand_more),iconSize: 40,)
-        ],
-        iconTheme: const IconThemeData(
-          color: Colors.white
+              });
+            }, icon: const Icon(Icons.expand_more),iconSize: 25,color: const Color.fromRGBO(137, 136, 125, 1.0),),
+          ],
         ),
-        backgroundColor: const Color.fromRGBO(5, 35, 44, 1.0),
+        iconTheme: const IconThemeData(
+          size: 20,
+          color: Color.fromRGBO(137, 136, 125, 1.0)
+        ),
+        backgroundColor: const Color.fromRGBO(253, 250, 245, 1.0),
       ),
       body: SafeArea(
-        child: SizedBox(
+        child: Container(
+          color: const Color.fromRGBO(253, 250, 245, 1.0),
           width: cWidth,
-            child: ScrollablePositionedList.builder(itemCount: verseLength, itemBuilder: (context,index){
-
-              int verse = jsonDecode(json.encode(data[index]))["verse"];
-              String content = jsonDecode(json.encode(data[index]))["content"];
-
-              return Container(
-                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                child: Row(
-                 crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 20),
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("$verse.",style: const TextStyle(fontSize: 20,color: Color.fromRGBO(5, 35, 44, 1.0)),),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                SizedBox(
-                                  width: mediaWidth * 0.75,
-                                  child: Text(content,style: const TextStyle(fontSize: 20,color: Color.fromRGBO(5, 35, 44, 1.0)),),
-                                )
-                              ],
-                            ),
-                            onLongPressUp: (){
-                              showDialog(context: context, builder: (BuildContext context){
-                                return AlertDialog(
-                                  title: const Text("북마크 추가하기"),
-                                  content: const Text("북마크 추가하시겠습니까?"),
-                                  actions: [
-                                    TextButton(onPressed: (){
-                                      Navigator.pop(context);
-                                      BookMark bookMark = BookMark(bible: bibleTitle, chapter: bibleChapter, verse:index+1, setTime: DateTime.now().toString(),content: content);
-                                      saveDB(bookMark,context);
-                                    }, child: const Text("확인")),
-                                    TextButton(onPressed: (){
-                                      Navigator.pop(context);
-                                      print("취소");
-                                    }, child: const Text("취소"))
-                                  ],
-                                );
-                              });
-                            },
-                          ),
-                          const SizedBox(
-                            height:10
-                          )
-                        ],
-                      )
-                    ),
+            child: ShaderMask(
+              shaderCallback: (Rect bounds) {
+                return LinearGradient( //아래 속성들을 조절하여 원하는 값을 얻을 수 있다.
+                  begin: Alignment.center,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Colors.white,
+                    Colors.white.withOpacity(0.01)
                   ],
-                ),
-              );
-            },initialScrollIndex:biblePassenger,itemScrollController: itemScrollController,)
+                  stops: const [0.95, 1],
+                  tileMode: TileMode.mirror,
+                ).createShader(bounds);
+              },
+              child: ScrollablePositionedList.builder(itemCount: verseLength, itemBuilder: (context,index){
+
+                int verse = jsonDecode(json.encode(data[index]))["verse"];
+                String content = jsonDecode(json.encode(data[index]))["content"];
+                return Container(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                  child: Row(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        color: const Color.fromRGBO(253, 250, 245, 1.0),
+                        margin: const EdgeInsets.only(top: 20),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("$verse.",style: const TextStyle(fontSize: 20,color: Color.fromRGBO(5, 35, 44, 1.0)),),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  SizedBox(
+                                    width: mediaWidth * 0.75,
+                                    child: Text(content,style: const TextStyle(fontSize: 20,color: Color.fromRGBO(5, 35, 44, 1.0)),),
+                                  )
+                                ],
+                              ),
+                              onLongPressUp: (){
+                                showDialog(context: context, builder: (BuildContext context){
+                                  return AlertDialog(
+                                    title: const Text("북마크 추가하기"),
+                                    content: const Text("북마크 추가하시겠습니까?"),
+                                    actions: [
+                                      TextButton(onPressed: (){
+                                        Navigator.pop(context);
+                                        BookMark bookMark = BookMark(bible: bibleTitle, chapter: bibleChapter, verse:index+1, setTime: DateTime.now().toString(),content: content);
+                                        saveDB(bookMark,context);
+                                      }, child: const Text("확인")),
+                                      TextButton(onPressed: (){
+                                        Navigator.pop(context);
+                                        print("취소");
+                                      }, child: const Text("취소"))
+                                    ],
+                                  );
+                                });
+                              },
+                            ),
+                            const SizedBox(
+                              height:10
+                            )
+                          ],
+                        )
+                      ),
+                    ],
+                  ),
+                );
+              },initialScrollIndex:biblePassenger,itemScrollController: itemScrollController,),
+            )
           ),
         ),
       );

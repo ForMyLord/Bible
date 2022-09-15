@@ -23,7 +23,7 @@ class _SelectBibleChapterState extends State<SelectBibleChapter> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text(widget.bibleTitle,style: const TextStyle(color:Colors.white, fontWeight: FontWeight.w500,fontSize: 25,fontFamily: "Dohyeon")),
+        title: Text(widget.bibleTitle,style: const TextStyle(color:Colors.white, fontWeight: FontWeight.w500,fontSize: 20)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back,color: Colors.white,),
           onPressed: () {Navigator.pop(context);},
