@@ -4035,7 +4035,7 @@ Map<String,dynamic> leviticus = {
     { "book ": 3,  "verse": 34,  "chapter ": 27,  "content":  "이상은 여호와께서 시내 산에서 이스라엘 자손을 위하여 모세에게 명하신 계명이니라 " },
   ]
 }; // 레위기
-Map<String,dynamic> Deuteronomy = {
+Map<String,dynamic> Numbers = {
   "1장":[
     { "book ": 4,  "verse": 1,  "chapter ": 1,  "content":  "이스라엘 자손이 애굽 땅에서 나온 후 제이년 이월 일일에 여호와께서 시내 광야 회막에서 모세에게 일러 가라사대 " },
     { "book ": 4,  "verse": 2,  "chapter ": 1,  "content":  "너희는 이스라엘 자손의 모든 회중 각 남자의 수를 그들의 가족과 종족을 따라 그 명수대로 계수할지니 " },
@@ -5400,7 +5400,7 @@ Map<String,dynamic> Deuteronomy = {
     {"book": 4, "verse": 13, "chapter": 36, "content": "이는 여리고 맞은편 요단 가 모압 평지에서 여호와께서 모세로 이스라엘 자손에게 명하신 명령과 규례니라"},
   ],
 }; // 민수기
-Map<String,dynamic> Numbers = {
+Map<String,dynamic> Deuteronomy = {
   "1장":[
     { "book ": 5,  "verse ": 1,  "chapter ": 1,  "content ":  "이는 모세가 요단 저편 숩 맞은편의 아라바 광야 곧 바란과 도벨과 라반과 하세롯과 디사합 사이에서 이스라엘 무리에게 선포한 말씀이니라 " },
     { "book ": 5,  "verse ": 2,  "chapter ": 1,  "content ":  "호렙 산에서 세일 산을 지나 가데스 바네아에까지 열하룻 길이었더라 " },
@@ -6429,5 +6429,5 @@ Map<String,dynamic> Numbers = {
     { "book ": 5,  "verse ": 11,  "chapter ": 34,  "content ":  "여호와께서 그를 애굽 땅에 보내사 바로와 그 모든 신하와 그 온 땅에 모든 이적과 기사와 " },
     { "book ": 5,  "verse ": 12,  "chapter ": 34,  "content ":  "모든 큰 권능과 위엄을 행하게 하시매 온 이스라엘 목전에서 그것을 행한 자더라 " },
   ],
-}; // 신명기
-Map<String,dynamic> Joshua = {} // 여호수아
+}; // 신명기 Numbers Deuteronomy
+Map<String,dynamic> Joshua = {}; // 여호수아
