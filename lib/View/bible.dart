@@ -196,7 +196,6 @@ class _BibleState extends State<Bible> {
                                       }, child: const Text("확인")),
                                       TextButton(onPressed: (){
                                         Navigator.pop(context);
-                                        print("취소");
                                       }, child: const Text("취소"))
                                     ],
                                   );
@@ -222,6 +221,8 @@ class _BibleState extends State<Bible> {
   Future<void> saveDB(BookMark bookMark, BuildContext context) async {
     DBHelper dh = DBHelper();
 
+    bool checkSame = false;
+
     var data = BookMark(
       bible: bookMark.bible,
       chapter: bookMark.chapter,
@@ -230,10 +231,20 @@ class _BibleState extends State<Bible> {
       content: bookMark.content
     );
 
-    await dh.insertBookMark(data);
+    // 북마크 중복저장 방지
+    context.read<BookMarkList>().getData.forEach((element) {
+      if(element['content'] == data.content){
+        checkSame = true;
+      }
+    });
 
-    List<Map<String,dynamic>> results = await dh.queryAll();
+    if(!checkSame){
+      await dh.insertBookMark(data);
 
-    context.read<BookMarkList>().setData(results);
+      List<Map<String,dynamic>> results = await dh.queryAll();
+
+      context.read<BookMarkList>().setData(results);
+    }
+
   }
 }

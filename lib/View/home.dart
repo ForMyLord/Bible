@@ -4,7 +4,6 @@ import 'package:bible/Utils/getChapter.dart';
 import 'package:bible/View/select_chapter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sqflite/sqflite.dart';
 import '../Model/bible_list.dart';
 
 class Homepage extends StatefulWidget {
@@ -117,7 +116,7 @@ class _HomepageState extends State<Homepage> {
                                             showSearchPreview = true;
 
                                             if(search_list.length>10){
-                                              showSearchHeight = deviceHeight*0.5;
+                                              showSearchHeight = deviceHeight*0.4;
                                             }else{
                                               showSearchHeight = 50.0*search_list.length;
                                             }
