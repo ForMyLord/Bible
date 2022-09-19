@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../Model/bookmark.dart';
 
 const String tableName = 'bookmark';
 
-class DBHelper with ChangeNotifier {
+class DBHelper {
   var _db;
 
   Future<Database> get database async {
@@ -22,7 +21,6 @@ class DBHelper with ChangeNotifier {
       version: 1
     );
 
-    notifyListeners();
     return _db;
   }
 
@@ -35,7 +33,6 @@ class DBHelper with ChangeNotifier {
       conflictAlgorithm: ConflictAlgorithm.replace // 동일한 데이터 여러번 추가시, 이전 데이터 덮어쓰기
     );
 
-    notifyListeners();
   }
 
   Future<List<BookMark>> getBookMark() async {
@@ -63,7 +60,6 @@ class DBHelper with ChangeNotifier {
       whereArgs: [id],
     );
 
-    notifyListeners();
   }
 
   Future<List<Map<String,dynamic>>> queryAll() async {
