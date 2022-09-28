@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'dart:convert';
 
-import '../Database/db.dart';
+import '../Database/bookmarkDB.dart';
 import '../Model/bookmark.dart';
 
 class Bible extends StatefulWidget {
@@ -89,7 +89,7 @@ class _BibleState extends State<Bible> {
                             child: ShaderMask(
                               child: ListView.builder(itemBuilder: (BuildContext context, int index) {
                                 return Container(
-                                    margin: const EdgeInsets.only(bottom:20),
+                                    margin: const EdgeInsets.only(bottom:20,top: 3),
                                     child:GestureDetector(
                                       child:  Row(
                                         children: [
@@ -183,20 +183,19 @@ class _BibleState extends State<Bible> {
                                   )
                                 ],
                               ),
-                              onLongPressUp: (){
+                              onLongPress: (){
                                 showDialog(context: context, builder: (BuildContext context){
                                   return AlertDialog(
-                                    title: const Text("북마크 추가하기"),
-                                    content: const Text("북마크 추가하시겠습니까?"),
+                                    content: const Text("북마크 추가하시겠습니까?",style: TextStyle(fontSize: 20),),
                                     actions: [
                                       TextButton(onPressed: (){
                                         Navigator.pop(context);
                                         BookMark bookMark = BookMark(bible: bibleTitle, chapter: bibleChapter, verse:index+1, setTime: DateTime.now().toString(),content: content);
                                         saveDB(bookMark,context);
-                                      }, child: const Text("확인")),
+                                      }, child: const Text("확인",style: TextStyle(fontSize: 15),)),
                                       TextButton(onPressed: (){
                                         Navigator.pop(context);
-                                      }, child: const Text("취소"))
+                                      }, child: const Text("취소",style: TextStyle(fontSize: 15),))
                                     ],
                                   );
                                 });
