@@ -41,6 +41,7 @@ class _HomepageState extends State<Homepage> {
   List<MemoList> memoList = []; // 메모 리스트
   List<Map<String,dynamic>> results = []; // 북마크 리스트
 
+  bool showSplash = true;
 
   late DBHelper dh;
   late DBHelperMemo dhMemo;
@@ -53,6 +54,12 @@ class _HomepageState extends State<Homepage> {
     dhMemo = DBHelperMemo();
 
     getDatabase(context);
+
+    Future.delayed(const Duration(milliseconds: 1500),(){
+      setState((){
+        showSplash = false;
+      });
+    });
   }
 
   Future<void> getDatabase(BuildContext context) async{
@@ -71,13 +78,26 @@ class _HomepageState extends State<Homepage> {
     double deviceWidth = MediaQuery.of(context).size.width;
     double deviceHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
+    return showSplash?Scaffold(
+      backgroundColor:  const Color.fromRGBO(5, 35, 44, 1.0),
+      body: Center(child:Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text('Bible',
+              style: TextStyle(color: Color.fromRGBO(253, 250, 245, 1.0),
+                  fontWeight: FontWeight.bold,fontSize: 35),),
+            Text('R.',
+              style: TextStyle(color: Colors.amber,
+                  fontWeight: FontWeight.bold,fontSize: 35),)
+          ]
+      ),),
+    ):Scaffold(
       appBar: AppBar(
         title: const Text('Bible',style: TextStyle(color: Color.fromRGBO(253, 250, 245, 1.0),fontWeight: FontWeight.bold),),
         backgroundColor: const Color.fromRGBO(5, 35, 44, 1.0),
-          elevation: 0,
-        ),
-        resizeToAvoidBottomInset: false,
+        elevation: 0,
+      ),
+      resizeToAvoidBottomInset: false,
       body: GestureDetector(
         onTap: (){
           FocusScope.of(context).unfocus();
@@ -89,145 +109,145 @@ class _HomepageState extends State<Homepage> {
             child: Column(
               children: [
                 Material(
-                    elevation:2,
-                    borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)),
-                    color: const Color.fromRGBO(5, 35, 44, 1.0),
-                    child: Column(
-                      children: [
-                        Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-                              child: TextField(
-                                style: const TextStyle(
-                                    fontSize: 20
-                                ),
-                                controller: _textController,
-                                onChanged: (value){
+                  elevation:2,
+                  borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)),
+                  color: const Color.fromRGBO(5, 35, 44, 1.0),
+                  child: Column(
+                    children: [
+                      Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+                            child: TextField(
+                              style: const TextStyle(
+                                  fontSize: 20
+                              ),
+                              controller: _textController,
+                              onChanged: (value){
 
-                                  if(value.contains(" ")){
-                                      _textController.text = value.replaceAll(" ", ""); // 띄어쓰기 발견시 제거하기
-                                      _textController.selection = TextSelection.fromPosition(TextPosition(offset: _textController.text.length)); // textfield 값 변경후, 단어 맨 뒤로 포커싱 해주기
-                                  }
+                                if(value.contains(" ")){
+                                  _textController.text = value.replaceAll(" ", ""); // 띄어쓰기 발견시 제거하기
+                                  _textController.selection = TextSelection.fromPosition(TextPosition(offset: _textController.text.length)); // textfield 값 변경후, 단어 맨 뒤로 포커싱 해주기
+                                }
 
-                                  // 검색창이 띄어쓰기, 비어있는 경우 아무런 조치 취해주지 않기
-                                  if(value.isEmpty){
+                                // 검색창이 띄어쓰기, 비어있는 경우 아무런 조치 취해주지 않기
+                                if(value.isEmpty){
+                                  setState((){
+                                    showSearchPreview = false;
+                                  });
+                                }
+
+                                if(value.codeUnits.contains(32)){
+                                  if(searchList.isEmpty){
                                     setState((){
                                       showSearchPreview = false;
                                     });
                                   }
+                                  return;
+                                }
 
-                                  if(value.codeUnits.contains(32)){
-                                    if(searchList.isEmpty){
+                                searchList = [];
+
+                                bible_list.forEach((item) => {
+                                  if(item.values.first.contains(value)){
+
+                                    if(!searchList.contains(item.keys.first)){
                                       setState((){
-                                        showSearchPreview = false;
-                                      });
-                                    }
-                                    return;
-                                  }
+                                        searchList.add(item.keys.first);
+                                        showSearchPreview = true;
 
-                                  searchList = [];
-
-                                  bible_list.forEach((item) => {
-                                    if(item.values.first.contains(value)){
-
-                                      if(!searchList.contains(item.keys.first)){
-                                        setState((){
-                                            searchList.add(item.keys.first);
-                                            showSearchPreview = true;
-
-                                            if(searchList.length>10){
-                                              showSearchHeight = deviceHeight*0.4;
-                                            }else{
-                                              showSearchHeight = 50.0*searchList.length;
-                                            }
-                                        })
-                                      }
-
-                                    }else if(searchList.isEmpty){ // 포함된 단어가 없는 경우
-                                      setState((){
-                                        showSearchPreview = false;
+                                        if(searchList.length>10){
+                                          showSearchHeight = deviceHeight*0.4;
+                                        }else{
+                                          showSearchHeight = 50.0*searchList.length;
+                                        }
                                       })
                                     }
-                                  });
 
-                                },
-                                autofocus: true,
-                                textAlignVertical: TextAlignVertical.center,
-                                decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: const Color.fromRGBO(253, 250, 245, 1.0),
-                                    contentPadding: const EdgeInsets.all(0),
-                                    prefixIcon: const Icon(Icons.search,color: Colors.black,),
-                                    suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState((){
-                                          _textController.clear();
-                                          showSearchPreview = false;
-                                        });
-                                      },
-                                      icon: const Icon(Icons.close,color: Colors.black,),
-                                    ),
-                                    hintText: '초성입력',
-                                    border: const OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                                        borderSide: BorderSide(color: Colors.black12)
-                                    ),
-                                    focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.black12),
-                                        borderRadius: BorderRadius.all(Radius.circular(20.0))
-                                    ),
-                                    enabledBorder: const OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                                      borderSide: BorderSide(color: Colors.black12),
-                                    ),
+                                  }else if(searchList.isEmpty){ // 포함된 단어가 없는 경우
+                                    setState((){
+                                      showSearchPreview = false;
+                                    })
+                                  }
+                                });
+
+                              },
+                              autofocus: true,
+                              textAlignVertical: TextAlignVertical.center,
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: const Color.fromRGBO(253, 250, 245, 1.0),
+                                contentPadding: const EdgeInsets.all(0),
+                                prefixIcon: const Icon(Icons.search,color: Colors.black,),
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState((){
+                                      _textController.clear();
+                                      showSearchPreview = false;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.close,color: Colors.black,),
+                                ),
+                                hintText: '초성입력',
+                                border: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                                    borderSide: BorderSide(color: Colors.black12)
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black12),
+                                    borderRadius: BorderRadius.all(Radius.circular(20.0))
+                                ),
+                                enabledBorder: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                                  borderSide: BorderSide(color: Colors.black12),
                                 ),
                               ),
                             ),
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 150),
-                              height: showSearchPreview?showSearchHeight:0,
-                              child: Scrollbar(
-                                  child: ListView.builder(// 검색어 자동완성
-                                      dragStartBehavior: DragStartBehavior.start, // 드래그 시작지점 알려주기
-                                      itemCount: searchList.length,
-                                      itemBuilder: (BuildContext context, int index){
-                                        return GestureDetector(
-                                            child: Padding(
-                                              padding: const EdgeInsets.fromLTRB(25, 10, 10, 10),
-                                              child: Text(searchList[index],style: const TextStyle(fontSize: 20,color: Color.fromRGBO(253, 250, 245, 1.0)),),
-                                            ),
-                                            onTap: (){
-                                              setState((){
-                                                bibleTitle = searchList[index];
-                                              });
+                          ),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 150),
+                            height: showSearchPreview?showSearchHeight:0,
+                            child: Scrollbar(
+                              child: ListView.builder(// 검색어 자동완성
+                                  dragStartBehavior: DragStartBehavior.start, // 드래그 시작지점 알려주기
+                                  itemCount: searchList.length,
+                                  itemBuilder: (BuildContext context, int index){
+                                    return GestureDetector(
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(25, 10, 10, 10),
+                                          child: Text(searchList[index],style: const TextStyle(fontSize: 20,color: Color.fromRGBO(253, 250, 245, 1.0)),),
+                                        ),
+                                        onTap: (){
+                                          setState((){
+                                            bibleTitle = searchList[index];
+                                          });
 
-                                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SelectBibleChapter(bibleTitle: bibleTitle,chapterLength: getChapter(bibleTitle),)));
-                                              _textController.clear();
-                                              setState((){
-                                                searchList = [];
-                                                showSearchPreview = false;
-                                              });
-                                            }
-                                        );
-                                      }),
-                                ),
+                                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SelectBibleChapter(bibleTitle: bibleTitle,chapterLength: getChapter(bibleTitle),)));
+                                          _textController.clear();
+                                          setState((){
+                                            searchList = [];
+                                            showSearchPreview = false;
+                                          });
+                                        }
+                                    );
+                                  }),
                             ),
-                          ],
-                        ),
-                          ],
-                    ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
                 Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
-                          width: 0.2,
-                          color: Colors.black
-                      ),
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(
+                        width: 0.2,
+                        color: Colors.black
+                    ),
                   ),
                   child: Column(
                     children: [
@@ -260,11 +280,11 @@ class _HomepageState extends State<Homepage> {
 
                                       });
                                     },
-                                      child: const Text("확인"),
+                                      child: const Text("확인",style: TextStyle(color: Color.fromRGBO(5, 35, 44, 1.0)),),
                                     ),
                                     TextButton(onPressed: (){
                                       Navigator.pop(context);
-                                    }, child: const Text("취소"))
+                                    }, child: const Text("취소",style: TextStyle(color: Color.fromRGBO(5, 35, 44, 1.0))),)
                                   ],
                                 );
                               });
@@ -313,11 +333,11 @@ class _HomepageState extends State<Homepage> {
                 Container(
                   height: MediaQuery.of(context).size.height*0.4,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                      width: 0.2,
-                      color: Colors.black
-                    )
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(
+                          width: 0.2,
+                          color: Colors.black
+                      )
                   ),
                   child: Column(
                     children: [
@@ -336,69 +356,69 @@ class _HomepageState extends State<Homepage> {
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                        //color: Colors.grey,
-                        height: MediaQuery.of(context).size.height*0.3,
-                        child: GridView.builder(gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+                          //color: Colors.grey,
+                          height: MediaQuery.of(context).size.height*0.3,
+                          child: GridView.builder(gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3,
                             childAspectRatio: 1,
                             mainAxisSpacing: 10,
                             crossAxisSpacing: 10,
-                        ), itemBuilder: (context,index) => GestureDetector(
-                          onTap: (){
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=> EditMemo(title: context.watch<MemoItems>().results[index].title,content: context.watch<MemoItems>().results[index].content,id: context.watch<MemoItems>().results[index].id,)));
-                          },
-                          child: GestureDetector(
-                            onLongPress: (){
-                              showDialog(context: context, builder: (BuildContext context){
-                                return AlertDialog(
-                                  content: const Text("메모를 삭제하시겠습니까?"),
-                                  actions: [
-                                    TextButton(
-                                      child: const Text("확인"),
-                                      onPressed: () async {
-                                        dhMemo.deleteMemoList(memoList[index].id);
-                                        getDatabase(context);
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    TextButton(
-                                        onPressed: (){
+                          ), itemBuilder: (context,index) => GestureDetector(
+                            onTap: (){
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> EditMemo(title: context.watch<MemoItems>().results[index].title,content: context.watch<MemoItems>().results[index].content,id: context.watch<MemoItems>().results[index].id,)));
+                            },
+                            child: GestureDetector(
+                              onLongPress: (){
+                                showDialog(context: context, builder: (BuildContext context){
+                                  return AlertDialog(
+                                    content: const Text("메모를 삭제하시겠습니까?"),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text("확인"),
+                                        onPressed: () async {
+                                          dhMemo.deleteMemoList(memoList[index].id);
+                                          getDatabase(context);
                                           Navigator.pop(context);
                                         },
-                                        child: Text("취소")
-                                    )
+                                      ),
+                                      TextButton(
+                                          onPressed: (){
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("취소")
+                                      )
 
-                                  ],
-                                );
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                boxShadow:[
-                                  BoxShadow(
-                                    color: colorData[index>=colorData.length?index-colorData.length:index],
-                                    spreadRadius: 0,
-                                    blurRadius: 0,
-                                  )
-                                ],
-                                borderRadius: BorderRadius.circular(10)
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const SizedBox(),
-                                    Text(context.watch<MemoItems>().results[index].title,style: const TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-                                    Text(getDate(context.watch<MemoItems>().results[index].setTime),style: const TextStyle(fontSize: 10, color: Colors.black),),
-                                    const SizedBox()
-                                  ],
-                                )
+                                    ],
+                                  );
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    boxShadow:[
+                                      BoxShadow(
+                                        color: colorData[index>=colorData.length?index-colorData.length:index],
+                                        spreadRadius: 0,
+                                        blurRadius: 0,
+                                      )
+                                    ],
+                                    borderRadius: BorderRadius.circular(10)
+                                ),
+                                child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const SizedBox(),
+                                        Text(context.watch<MemoItems>().results[index].title,style: const TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
+                                        Text(getDate(context.watch<MemoItems>().results[index].setTime),style: const TextStyle(fontSize: 10, color: Colors.black),),
+                                        const SizedBox()
+                                      ],
+                                    )
+                                ),
                               ),
                             ),
-                          ),
-                        ),itemCount: context.watch<MemoItems>().results.length,dragStartBehavior: DragStartBehavior.start,)
+                          ),itemCount: context.watch<MemoItems>().results.length,dragStartBehavior: DragStartBehavior.start,)
                       )
                     ],
                   ),

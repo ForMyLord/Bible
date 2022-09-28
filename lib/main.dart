@@ -1,7 +1,7 @@
 import 'package:bible/Provider/BookMarkList.dart';
 import 'package:bible/Provider/memoItems.dart';
-import 'package:flutter/material.dart';
 import 'package:bible/View/home.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 
