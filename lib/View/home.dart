@@ -319,7 +319,7 @@ class _HomepageState extends State<Homepage> {
                               ),
                             ),
                             SizedBox(
-                                height: MediaQuery.of(context).size.height*0.2+20,
+                                height: MediaQuery.of(context).size.height*0.2,
                                 width: MediaQuery.of(context).size.width,
                                 child: context.watch<BookMarkList>().results.isNotEmpty ?
                                 PageView.builder(itemBuilder: (context,index){
@@ -357,7 +357,7 @@ class _HomepageState extends State<Homepage> {
                         height: 10,
                       ),
                       Container(
-                        height: MediaQuery.of(context).size.height*0.3,
+                        height: MediaQuery.of(context).size.height*0.3 + 20,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                             border: Border.all(
@@ -385,7 +385,7 @@ class _HomepageState extends State<Homepage> {
                             context.watch<MemoItems>().results.isNotEmpty ? Container(
                                 padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                                 //color: Colors.grey,
-                                height: MediaQuery.of(context).size.height*0.2,
+                                height: MediaQuery.of(context).size.height*0.2 + 20,
                                 child: GridView.builder(gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount:3,
                                   childAspectRatio: 1,
