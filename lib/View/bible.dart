@@ -186,16 +186,16 @@ class _BibleState extends State<Bible> {
                               onLongPress: (){
                                 showDialog(context: context, builder: (BuildContext context){
                                   return AlertDialog(
-                                    content: const Text("북마크 추가하시겠습니까?",style: TextStyle(fontSize: 20),),
+                                    content: const Text("북마크 추가하시겠습니까?",style: TextStyle(fontSize: 20,color: Color.fromRGBO(5, 35, 44, 1.0)),),
                                     actions: [
                                       TextButton(onPressed: (){
                                         Navigator.pop(context);
                                         BookMark bookMark = BookMark(bible: bibleTitle, chapter: bibleChapter, verse:index+1, setTime: DateTime.now().toString(),content: content);
                                         saveDB(bookMark,context);
-                                      }, child: const Text("확인",style: TextStyle(fontSize: 15),)),
+                                      }, child: const Text("확인",style: TextStyle(fontSize: 15,color: Color.fromRGBO(5, 35, 44, 1.0)),)),
                                       TextButton(onPressed: (){
                                         Navigator.pop(context);
-                                      }, child: const Text("취소",style: TextStyle(fontSize: 15),))
+                                      }, child: const Text("취소",style: TextStyle(fontSize: 15,color: Color.fromRGBO(5, 35, 44, 1.0)),))
                                     ],
                                   );
                                 });
