@@ -82,6 +82,15 @@ flutter:
      - family: Dohyeon
        fonts:
          - asset: asset/fonts/DoHyeon-Regular.ttf
+     - family: NanumGothic
+       fonts:
+         - asset: asset/fonts/NanumGothic-Regular.ttf
+     - family: NanumMyeongjo
+       fonts:
+         - asset: asset/fonts/NanumMyeongjo-Regular.ttf
+     - family: SongMyung
+       fonts:
+         - asset: asset/fonts/SongMyung-Regular.ttf
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

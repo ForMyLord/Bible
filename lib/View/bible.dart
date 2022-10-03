@@ -1,5 +1,6 @@
 import 'package:bible/Model/bible_list.dart';
 import 'package:bible/Provider/BookMarkList.dart';
+import 'package:bible/Provider/userSetting.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -173,13 +174,13 @@ class _BibleState extends State<Bible> {
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("$verse.",style: const TextStyle(fontSize: 20,color: Color.fromRGBO(5, 35, 44, 1.0)),),
+                                  Text("$verse",style: const TextStyle(fontSize: 20,color: Color.fromRGBO(5, 35, 44, 1.0)),),
                                   const SizedBox(
                                     width: 20,
                                   ),
                                   SizedBox(
                                     width: mediaWidth * 0.75,
-                                    child: Text(content,style: const TextStyle(fontSize: 20,color: Color.fromRGBO(5, 35, 44, 1.0)),),
+                                    child: Text(content,style: TextStyle(fontSize: context.watch<setFontSize>().i,fontFamily: context.watch<setFontStyle>().fontStyle,color: const Color.fromRGBO(5, 35, 44, 1.0)),),
                                   )
                                 ],
                               ),
