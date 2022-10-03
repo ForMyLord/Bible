@@ -54,6 +54,8 @@ class _user_settings_pageState extends State<user_settings_page> {
   @override
   Widget build(BuildContext context) {
 
+    print('rebuild');
+
     String font = context.watch<setFontStyle>().fontStyle;
 
     if(font == 'NanumGothic'){
@@ -65,6 +67,20 @@ class _user_settings_pageState extends State<user_settings_page> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("설정", style: TextStyle(color: Color.fromRGBO(253, 250, 245, 1.0),fontFamily: ''),),
+        backgroundColor: const Color.fromRGBO(5, 35, 44, 1.0),
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        actions: [
+          TextButton(
+            child: const Text("확인",style: TextStyle(fontFamily: '',color: Color.fromRGBO(253, 250, 245, 1.0),fontSize: 18),),
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          )
+        ],
+      ),
       body: Column(
         children: [
           const SizedBox(

@@ -1,6 +1,7 @@
 import 'package:bible/Model/bible_list.dart';
 import 'package:bible/Provider/BookMarkList.dart';
 import 'package:bible/Provider/userSetting.dart';
+import 'package:bible/View/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -138,6 +139,14 @@ class _BibleState extends State<Bible> {
           color: Color.fromRGBO(137, 136, 125, 1.0)
         ),
         backgroundColor: const Color.fromRGBO(253, 250, 245, 1.0),
+        actions: [
+          IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const user_settings_page()));
+          }, icon: const Icon(Icons.settings)),
+          const SizedBox(
+            width: 10,
+          )
+        ],
       ),
       body: SafeArea(
         child: Container(

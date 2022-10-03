@@ -157,9 +157,6 @@ class _HomepageState extends State<Homepage> {
     icon: Icon(Icons.book_outlined),
     label: '성경',
     ),
-      BottomNavigationBarItem(icon: Icon(Icons.settings),
-      label: '설정'
-      )
     ],
 
     currentIndex: naviIndex,
