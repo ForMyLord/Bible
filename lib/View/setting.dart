@@ -54,8 +54,6 @@ class _user_settings_pageState extends State<user_settings_page> {
   @override
   Widget build(BuildContext context) {
 
-    print('rebuild');
-
     String font = context.watch<setFontStyle>().fontStyle;
 
     if(font == 'NanumGothic'){

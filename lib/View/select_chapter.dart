@@ -13,12 +13,26 @@ class SelectBibleChapter extends StatefulWidget {
 
 class _SelectBibleChapterState extends State<SelectBibleChapter> {
 
+  String jang = '장';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+
+    if(widget.bibleTitle == '시편'){
+      jang = '편';
+    }
+  }
+
   int selectedChapter = 0;
 
   @override
   Widget build(BuildContext context) {
 
     Size size = MediaQuery.of(context).size;
+
 
     return Scaffold(
       appBar: AppBar(
@@ -53,8 +67,8 @@ class _SelectBibleChapterState extends State<SelectBibleChapter> {
                          padding: const EdgeInsets.all(7),
                          child: Center(
                            child: Text(
-                             '${i+1}장',style: const TextStyle(
-                               fontSize: 18,fontWeight: FontWeight.w500
+                             '${i+1}$jang',style: const TextStyle(
+                               fontSize: 18,fontWeight: FontWeight.w600
                            ),
                            ),
                          ),

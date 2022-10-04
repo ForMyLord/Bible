@@ -47,7 +47,7 @@ class _SelectBibleState extends State<SelectBible> {
                         child: Center(
                           child: Text(
                             bible[i],style: const TextStyle(
-                              fontSize: 15,fontWeight: FontWeight.w500
+                              fontSize: 15,fontWeight: FontWeight.w600
                           ),
                           ),
                         ),

@@ -77,6 +77,8 @@ class _HomepageState extends State<Homepage> {
 
     memoList = await dhMemo.getMemoList();
 
+    print(memoList);
+
     context.read<BookMarkList>().setData(results);
     context.read<MemoItems>().setData(memoList);
   }
@@ -105,10 +107,6 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-
-    double deviceWidth = MediaQuery.of(context).size.width;
-    double deviceHeight = MediaQuery.of(context).size.height;
-
     return showSplash?Scaffold(
       backgroundColor:  const Color.fromRGBO(5, 35, 44, 1.0),
       body: Center(child:Row(
@@ -342,7 +340,7 @@ class _HomepageState extends State<Homepage> {
                                 const Text("북마크 말씀",style: TextStyle(
                                     fontSize: 25, fontWeight: FontWeight.bold,color: Color.fromRGBO(5, 35, 44, 1.0)
                                 ),),
-                                context.watch<BookMarkList>().results.length>0?IconButton(onPressed: (){
+                                context.watch<BookMarkList>().results.isNotEmpty?IconButton(onPressed: (){
                                   showDialog(context: context, builder: (BuildContext context){
                                     return AlertDialog(
                                       title: const Text("북마크 취소하기"),
@@ -465,7 +463,7 @@ class _HomepageState extends State<Homepage> {
                                         actions: [
                                           TextButton(
                                             child: const Text("확인",style:TextStyle(fontSize: 18,color: Color.fromRGBO(5, 35, 44, 1.0))),
-                                            onPressed: () async {
+                                            onPressed: () {
                                               dhMemo.deleteMemoList(memoList[index].id);
                                               getDatabase(context);
                                               Navigator.pop(context);
@@ -508,7 +506,7 @@ class _HomepageState extends State<Homepage> {
                                   ),
                                 ),
                               ),itemCount: context.watch<MemoItems>().results.length,dragStartBehavior: DragStartBehavior.start,)
-                          ) : Container( height:MediaQuery.of(context).size.height*0.2 - 35,child: const Center(child: Text("등록된 메모가 없습니다"),),)
+                          ) : SizedBox( height:MediaQuery.of(context).size.height*0.2 - 35,child: const Center(child: Text("등록된 메모가 없습니다"),),)
                         ],
                       ),
                     ),

@@ -25,6 +25,22 @@ class _MemoState extends State<Memo> {
   final TextEditingController _chapterController = TextEditingController();
   final TextEditingController _verseController = TextEditingController();
 
+  List<DropdownMenuItem> menuItems = [];
+
+  String selectItem = "창세기";
+
+  int maxVerse = 1;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    bibleEnglishName.keys.forEach((value) {
+      menuItems.add(
+        DropdownMenuItem(value: value,child:Text(value),)
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,19 +48,32 @@ class _MemoState extends State<Memo> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(5, 35, 44, 1.0),
-        title: const Text("메모추가"),
-        actions: [
-          TextButton(onPressed: (){
-            MemoList memo = MemoList(
+        automaticallyImplyLeading: false,
+        leading: IconButton(onPressed: () {
+          MemoList memo = MemoList(
               id:setSha(DateTime.now().toString()),
               title: _titleController.text,
               content: _contentController.text,
               setTime: DateTime.now().toString()
-            );
+          );
 
-            // 데이터 저장
-            saveDB(memo, context);
-          }, child: const Text("저장",style: TextStyle(color: Colors.white,fontSize: 17))),
+          // 데이터 저장
+          saveDB(memo, context);
+          }, icon: const Icon(Icons.arrow_back_ios_new),
+        ),
+        title: const Text("메모추가"),
+        actions: [
+          // TextButton(onPressed: (){
+          //   MemoList memo = MemoList(
+          //     id:setSha(DateTime.now().toString()),
+          //     title: _titleController.text,
+          //     content: _contentController.text,
+          //     setTime: DateTime.now().toString()
+          //   );
+          //
+          //   // 데이터 저장
+          //   saveDB(memo, context);
+          // }, child: const Text("삭제",style: TextStyle(color: Colors.white,fontSize: 17))),
           TextButton(onPressed: (){
             showDialog(context: context, builder: (BuildContext context){
               return StatefulBuilder(
@@ -55,29 +84,31 @@ class _MemoState extends State<Memo> {
                       height: MediaQuery.of(context).size.height*0.1 + 15,
                       child: Column(
                         children: [
-                          TextField(
-                            autofocus: true,
-                            controller: _bibleController,
-                            decoration: const InputDecoration(
-                              hintText: '성경',
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Color.fromRGBO(5, 35, 44, 1.0)),
-                              ),
-                            ),
-                          ),
+                          DropdownButton(items: menuItems, onChanged: (value){setState((){selectItem = value;});},value: selectItem,menuMaxHeight: 300,),
                           Row(
                             children: [
                               Expanded(flex: 1,child: TextField(
                                 controller: _chapterController,
-                                decoration: const InputDecoration(
-                                  hintText: '장',
-                                  focusedBorder: UnderlineInputBorder(
+                                decoration: InputDecoration(
+                                  hintText: '1~${bibleLength[selectItem]}장',
+                                  focusedBorder: const UnderlineInputBorder(
                                     borderSide: BorderSide(color: Color.fromRGBO(5, 35, 44, 1.0)),
                                   ),
                                 ),
+                                onChanged: (value){
+
+                                  if(value.isEmpty){
+                                    setState((){
+                                      maxVerse = 0;
+                                    });
+                                  }
+
+                                  setState((){
+                                    if(bibleEnglishName[selectItem]!["${value}장"]!=null){
+                                      maxVerse = bibleEnglishName[selectItem]!["${value}장"].length;
+                                    }
+                                  });
+                                },
                               ),),
                               const SizedBox(
                                 width: 10,
@@ -86,9 +117,9 @@ class _MemoState extends State<Memo> {
                                 flex: 1,
                                 child: TextField(
                                   controller: _verseController,
-                                  decoration: const InputDecoration(
-                                    hintText: '절',
-                                    focusedBorder: UnderlineInputBorder(
+                                  decoration: InputDecoration(
+                                    hintText: maxVerse>1?'1~$maxVerse절':'절',
+                                    focusedBorder: const UnderlineInputBorder(
                                       borderSide: BorderSide(color: Color.fromRGBO(5, 35, 44, 1.0)),
                                     ),
                                   ),
@@ -102,10 +133,10 @@ class _MemoState extends State<Memo> {
                     actions: [
                       TextButton(onPressed: (){
 
-                        if(_bibleController.text.isNotEmpty && _chapterController.text.isNotEmpty && _verseController.text.isNotEmpty){
+                        if(selectItem.isNotEmpty && _chapterController.text.isNotEmpty && _verseController.text.isNotEmpty){
 
                           bibleEnglishName.keys.forEach((key) {
-                            if(key.contains(_bibleController.text)){
+                            if(key.contains(selectItem)){
 
                               bibleEnglishName[key]!.forEach((key, value) {
                                 if(key == "${_chapterController.text}장"){
@@ -113,7 +144,7 @@ class _MemoState extends State<Memo> {
                                   if(value.length < int.parse(_verseController.text) || int.parse(_verseController.text)<=0){
                                     _verseController.clear();
                                   }else{
-                                    _contentController.text= "${_contentController.text}\n(${_bibleController.text} ${_chapterController.text}:${_verseController.text})\n ${value[int.parse(_verseController.text)+1]['content']}";
+                                    _contentController.text= "${_contentController.text}\n($selectItem ${_chapterController.text}:${_verseController.text})\n ${value[int.parse(_verseController.text)+1]['content']}";
                                     Navigator.of(context).pop();
                                   }
                                 }
@@ -154,7 +185,7 @@ class _MemoState extends State<Memo> {
           ,
           Padding(
             padding: const EdgeInsets.only(left: 10,right: 10),
-            child: Container(
+            child: SizedBox(
               height: MediaQuery.of(context).size.height*0.7,
               child: InkWell(
                 splashColor: Colors.transparent,

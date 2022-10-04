@@ -65,7 +65,7 @@ class _SelectBibleVerseState extends State<SelectBibleVerse> {
                         child: Center(
                           child: Text(
                             '${i+1}절',style: const TextStyle(
-                              fontSize: 18,fontWeight: FontWeight.w500
+                              fontSize: 18,fontWeight: FontWeight.w600
                           ),
                           ),
                         ),
