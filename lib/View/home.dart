@@ -16,6 +16,7 @@ import '../Model/bible_list.dart';
 import '../Model/memoList.dart';
 import 'memo.dart';
 import 'select_bible.dart';
+import 'package:flutter/services.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -58,6 +59,7 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     dh = DBHelper();
     dhMemo = DBHelperMemo();
     dhSetting = DBHelperSetting();
@@ -453,7 +455,7 @@ class _HomepageState extends State<Homepage> {
                                 crossAxisSpacing: 10,
                               ), itemBuilder: (context,index) => GestureDetector(
                                 onTap: (){
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> EditMemo(title: context.watch<MemoItems>().results[index].title,content: context.watch<MemoItems>().results[index].content,id: context.watch<MemoItems>().results[index].id,)));
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> EditMemo(title: context.read<MemoItems>().results[index].title,content: context.read<MemoItems>().results[index].content,id: context.read<MemoItems>().results[index].id,)));
                                 },
                                 child: GestureDetector(
                                   onLongPress: (){
@@ -506,7 +508,7 @@ class _HomepageState extends State<Homepage> {
                                   ),
                                 ),
                               ),itemCount: context.watch<MemoItems>().results.length,dragStartBehavior: DragStartBehavior.start,)
-                          ) : SizedBox( height:MediaQuery.of(context).size.height*0.2 - 35,child: const Center(child: Text("등록된 메모가 없습니다"),),)
+                          ) : Container( height:MediaQuery.of(context).size.height*0.2 - 35,child: const Center(child: Text("등록된 메모가 없습니다"),),)
                         ],
                       ),
                     ),

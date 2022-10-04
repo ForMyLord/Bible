@@ -29,9 +29,9 @@ class _user_settings_pageState extends State<user_settings_page> {
 
   List<Widget> fontShape = <Widget>[
     const Text(
-      '나눔고딕',
+      '기본',
       style: TextStyle(
-        fontFamily: 'NanumGothic',
+        fontFamily: '',
         fontSize: 18,
       ),
     ),
@@ -88,7 +88,7 @@ class _user_settings_pageState extends State<user_settings_page> {
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Container(
-                height: 130,
+                height: MediaQuery.of(context).size.height*0.17,
                 decoration: const BoxDecoration(
                   boxShadow: [
                     BoxShadow(
@@ -109,8 +109,9 @@ class _user_settings_pageState extends State<user_settings_page> {
                       children: [
                         const Text(
                           '요한복음 3:16 KRV',
-                          style: TextStyle(fontSize: 18, color: Colors.indigo),
+                          style: TextStyle(fontSize: 18, color: Colors.indigo,fontFamily: ''),
                         ),
+                        const SizedBox(height: 10,),
                         Text(
                           '하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 저를 믿는 자마다 멸망치 않고 영생을 얻게 하려 하심이니라',
                           style: TextStyle(
@@ -137,7 +138,7 @@ class _user_settings_pageState extends State<user_settings_page> {
                 children: const [
                   Text(
                     '글꼴',
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 20,fontFamily: ''),
                   ),
                 ],
               ),
@@ -203,7 +204,7 @@ class _user_settings_pageState extends State<user_settings_page> {
                 children: [
                   const Text(
                     '폰트크기',
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 20,fontFamily: ''),
                   ),
                   const SizedBox(
                     width: 20,
