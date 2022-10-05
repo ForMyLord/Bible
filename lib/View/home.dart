@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Model/bible_list.dart';
 import '../Model/memoList.dart';
+import 'bible.dart';
 import 'memo.dart';
 import 'select_bible.dart';
 import 'package:flutter/services.dart';
@@ -394,21 +395,26 @@ class _HomepageState extends State<Homepage> {
 
                                 _pageController.initialPage = currentPage;
 
-                                return Container(
-                                  padding: const EdgeInsets.fromLTRB(20, 0, 10, 10),
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          width: deviceWidth*0.9,
-                                          child: Text("${context.watch<BookMarkList>().results[index]["content"]}",style: const TextStyle(fontSize: 18,color: Color.fromRGBO(5, 35, 44, 1.0)),maxLines: 6,)
-                                        ),
-                                        const SizedBox(height: 5,),
-                                        Text("${context.watch<BookMarkList>().results[index]['bible']} ${context.watch<BookMarkList>().results[index]['chapter']+1}:${context.watch<BookMarkList>().results[index]['verse']} KRV",style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold,color: Color.fromRGBO(5, 35, 44, 1.0)),),
-                                      ],
+                                return GestureDetector(
+                                  child: Container(
+                                    padding: const EdgeInsets.fromLTRB(20, 0, 10, 10),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            width: deviceWidth*0.9,
+                                            child: Text("${context.watch<BookMarkList>().results[index]["content"]}",style: const TextStyle(fontSize: 18,color: Color.fromRGBO(5, 35, 44, 1.0)),maxLines: 6,)
+                                          ),
+                                          const SizedBox(height: 5,),
+                                          Text("${context.watch<BookMarkList>().results[index]['bible']} ${context.watch<BookMarkList>().results[index]['chapter']+1}:${context.watch<BookMarkList>().results[index]['verse']} KRV",style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold,color: Color.fromRGBO(5, 35, 44, 1.0)),),
+                                        ],
+                                      ),
                                     ),
                                   ),
+                                  onTap: (){
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Bible(bibleChapter: context.watch<BookMarkList>().results[index]['chapter'], biblePassenger: context.watch<BookMarkList>().results[index]['verse']-1, bibleTitle: context.watch<BookMarkList>().results[index]['bible'])));
+                                  },
                                 );
                               },controller: _pageController,
                                 itemCount: context.watch<BookMarkList>().results.length,onPageChanged: (page){

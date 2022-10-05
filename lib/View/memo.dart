@@ -86,52 +86,54 @@ class _MemoState extends State<Memo> {
                       title: const Text("말씀 추가"),
                       content: SizedBox(
                         height: MediaQuery.of(context).size.height*0.1 + 15,
-                        child: Column(
-                          children: [
-                            DropdownButton(items: menuItems, onChanged: (value){setState((){selectItem = value;});},value: selectItem,menuMaxHeight: 300,),
-                            Row(
-                              children: [
-                                Expanded(flex: 1,child: TextField(
-                                  controller: _chapterController,
-                                  decoration: InputDecoration(
-                                    hintText: '1~${bibleLength[selectItem]}장',
-                                    focusedBorder: const UnderlineInputBorder(
-                                      borderSide: BorderSide(color: Color.fromRGBO(5, 35, 44, 1.0)),
-                                    ),
-                                  ),
-                                  onChanged: (value){
-
-                                    if(value.isEmpty){
-                                      setState((){
-                                        maxVerse = 0;
-                                      });
-                                    }
-
-                                    setState((){
-                                      if(bibleEnglishName[selectItem]!["${value}장"]!=null){
-                                        maxVerse = bibleEnglishName[selectItem]!["${value}장"].length;
-                                      }
-                                    });
-                                  },
-                                ),),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: TextField(
-                                    controller: _verseController,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              DropdownButton(items: menuItems, onChanged: (value){setState((){selectItem = value;});},value: selectItem,menuMaxHeight: 300,),
+                              Row(
+                                children: [
+                                  Expanded(flex: 1,child: TextField(
+                                    controller: _chapterController,
                                     decoration: InputDecoration(
-                                      hintText: maxVerse>1?'1~$maxVerse절':'절',
+                                      hintText: '1~${bibleLength[selectItem]}장',
                                       focusedBorder: const UnderlineInputBorder(
                                         borderSide: BorderSide(color: Color.fromRGBO(5, 35, 44, 1.0)),
                                       ),
                                     ),
+                                    onChanged: (value){
+
+                                      if(value.isEmpty){
+                                        setState((){
+                                          maxVerse = 0;
+                                        });
+                                      }
+
+                                      setState((){
+                                        if(bibleEnglishName[selectItem]!["${value}장"]!=null){
+                                          maxVerse = bibleEnglishName[selectItem]!["${value}장"].length;
+                                        }
+                                      });
+                                    },
+                                  ),),
+                                  const SizedBox(
+                                    width: 10,
                                   ),
-                                )
-                              ],
-                            )
-                          ],
+                                  Expanded(
+                                    flex: 1,
+                                    child: TextField(
+                                      controller: _verseController,
+                                      decoration: InputDecoration(
+                                        hintText: maxVerse>1?'1~$maxVerse절':'절',
+                                        focusedBorder: const UnderlineInputBorder(
+                                          borderSide: BorderSide(color: Color.fromRGBO(5, 35, 44, 1.0)),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
                       actions: [
