@@ -43,6 +43,17 @@ class _MemoState extends State<Memo> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _titleController.dispose();
+    _contentController.dispose();
+    _bibleController.dispose();
+    _chapterController.dispose();
+    _verseController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     return WillPopScope(
@@ -132,12 +143,15 @@ class _MemoState extends State<Memo> {
                               if(key.contains(selectItem)){
 
                                 bibleEnglishName[key]!.forEach((key, value) {
-                                  if(key == "${_chapterController.text}장"){
+                                  if(key == "${int.parse(_chapterController.text)}장"){
+
+                                    print(_chapterController.text);
+
 
                                     if(value.length < int.parse(_verseController.text) || int.parse(_verseController.text)<=0){
                                       _verseController.clear();
                                     }else{
-                                      _contentController.text= "${_contentController.text}\n($selectItem ${_chapterController.text}:${_verseController.text})\n ${value[int.parse(_verseController.text)+1]['content']}";
+                                      _contentController.text= "${_contentController.text}\n($selectItem ${_chapterController.text}:${_verseController.text})\n ${value[int.parse(_verseController.text)-1]['content']}";
                                       Navigator.of(context).pop();
                                     }
                                   }

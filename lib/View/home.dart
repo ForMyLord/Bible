@@ -29,10 +29,10 @@ class _HomepageState extends State<Homepage> {
 
   String bibleTitle = "창세기"; // 성경 키워드
 
+  int currentPage = 0;
+
   final TextEditingController _textController = TextEditingController(); // TextController 만들기
   final PageController _pageController = PageController(initialPage: 0);
-
-  int currentPage = 0;
 
   bool showSearchPreview = false; // 연관 검색어 보여주는데 필요한 bool 값
   double showSearchHeight = 0;
@@ -79,8 +79,6 @@ class _HomepageState extends State<Homepage> {
 
     memoList = await dhMemo.getMemoList();
 
-    print(memoList);
-
     context.read<BookMarkList>().setData(results);
     context.read<MemoItems>().setData(memoList);
   }
@@ -106,9 +104,18 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _textController.dispose();
+    _pageController.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
+
     return showSplash?Scaffold(
       backgroundColor:  const Color.fromRGBO(5, 35, 44, 1.0),
       body: Center(child:Row(
@@ -131,8 +138,7 @@ class _HomepageState extends State<Homepage> {
                 style: TextStyle(color: Color.fromRGBO(253, 250, 245, 1.0),
                     fontWeight: FontWeight.bold,fontSize: 20,fontFamily: ''),),
               Text('R.',
-                style: TextStyle(color: Colors.amber,
-                    fontWeight: FontWeight.bold,fontSize: 20,fontFamily: ''),)
+                style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold,fontSize: 20,fontFamily: ''),)
             ]
         ),
         backgroundColor: const Color.fromRGBO(5, 35, 44, 1.0),
@@ -385,19 +391,23 @@ class _HomepageState extends State<Homepage> {
                               width: MediaQuery.of(context).size.width,
                               child: context.watch<BookMarkList>().results.isNotEmpty ?
                               PageView.builder(itemBuilder: (context,index){
+
+                                _pageController.initialPage = currentPage;
+
                                 return Container(
                                   padding: const EdgeInsets.fromLTRB(20, 0, 10, 10),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(height: 13,),
-                                      SizedBox(
-                                        width: deviceWidth*0.9,
-                                        child: Text("${context.watch<BookMarkList>().results[index]["content"]}",style: const TextStyle(fontSize: 18,color: Color.fromRGBO(5, 35, 44, 1.0)),maxLines: 5,),
-                                      ),
-                                      const SizedBox(height: 7,),
-                                      Text("${context.watch<BookMarkList>().results[index]['bible']} ${context.watch<BookMarkList>().results[index]['chapter']+1}:${context.watch<BookMarkList>().results[index]['verse']} KRV",style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold,color: Color.fromRGBO(5, 35, 44, 1.0)),),
-                                    ],
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          width: deviceWidth*0.9,
+                                          child: Text("${context.watch<BookMarkList>().results[index]["content"]}",style: const TextStyle(fontSize: 18,color: Color.fromRGBO(5, 35, 44, 1.0)),maxLines: 6,)
+                                        ),
+                                        const SizedBox(height: 5,),
+                                        Text("${context.watch<BookMarkList>().results[index]['bible']} ${context.watch<BookMarkList>().results[index]['chapter']+1}:${context.watch<BookMarkList>().results[index]['verse']} KRV",style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold,color: Color.fromRGBO(5, 35, 44, 1.0)),),
+                                      ],
+                                    ),
                                   ),
                                 );
                               },controller: _pageController,
@@ -410,7 +420,7 @@ class _HomepageState extends State<Homepage> {
                                 child: Text("아직 북마크한 말씀이 없습니다"),
                               )
                           ),
-                          context.watch<BookMarkList>().results.isNotEmpty ?Text('${currentPage+1} / ${context.watch<BookMarkList>().results.length}',style: const TextStyle(fontSize: 15),) : Container(height: 40,),
+                          context.watch<BookMarkList>().results.isNotEmpty ?Text('${currentPage + 1} / ${context.watch<BookMarkList>().results.length}',style: const TextStyle(fontSize: 15),) : Container(height: 40,),
                           const SizedBox(height: 15,)
                         ],
                       ),

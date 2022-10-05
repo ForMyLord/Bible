@@ -47,6 +47,16 @@ class _EditMemoState extends State<EditMemo> {
     super.initState();
   }
 
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _titleController.dispose();
+    _contentController.dispose();
+    _bibleController.dispose();
+    _chapterController.dispose();
+    _verseController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -77,8 +87,6 @@ class _EditMemoState extends State<EditMemo> {
                   DBHelperMemo().deleteMemoList(widget.id);
 
                   List<MemoList> results = await DBHelperMemo().getMemoList();
-
-                  print(results);
 
                   context.read<MemoItems>().setData(results);
 
@@ -200,7 +208,7 @@ class _EditMemoState extends State<EditMemo> {
                                                     _verseController.clear();
                                                   } else {
                                                     _contentController.text =
-                                                        "${_contentController.text}\n(${selectItem} ${_chapterController.text}:${_verseController.text})\n ${value[int.parse(_verseController.text) + 1]['content']}";
+                                                        "${_contentController.text}\n(${selectItem} ${_chapterController.text}:${_verseController.text})\n ${value[int.parse(_verseController.text)-1]['content']}";
                                                     Navigator.of(context).pop();
                                                   }
                                                 }

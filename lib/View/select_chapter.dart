@@ -68,7 +68,7 @@ class _SelectBibleChapterState extends State<SelectBibleChapter> {
                          child: Center(
                            child: Text(
                              '${i+1}$jang',style: const TextStyle(
-                               fontSize: 18,fontWeight: FontWeight.w500
+                               fontSize: 18,fontWeight: FontWeight.w600
                            ),
                            ),
                          ),
