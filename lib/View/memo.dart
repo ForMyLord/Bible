@@ -56,6 +56,8 @@ class _MemoState extends State<Memo> {
   @override
   Widget build(BuildContext context) {
 
+    print(MediaQuery.of(context).size.height);
+
     return WillPopScope(
       onWillPop: () {
         return Future(() => false);
@@ -289,7 +291,7 @@ class _MemoState extends State<Memo> {
                         hintText: '내용을 입력해주세요',
                         border: InputBorder.none
                     ),
-                    maxLines: 13,
+                    maxLines: 17,
                   ),
                 )
               )

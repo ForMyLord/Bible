@@ -72,6 +72,7 @@ class _SelectBibleVerseState extends State<SelectBibleVerse> {
                       ),
                     ),
                     onTap: (){
+                      Navigator.pop(context);
                       Navigator.of(context).push(MaterialPageRoute(builder: (context) => Bible(bibleChapter: widget.selectedChapter, biblePassenger: i, bibleTitle: widget.bibleTitle)));
                     },
                   )
