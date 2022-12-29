@@ -1,12 +1,10 @@
 import 'package:bible/Database/bookmarkDB.dart';
 import 'package:bible/Database/memoDB.dart';
 import 'package:bible/Database/userSettingDB.dart';
-import 'package:bible/Model/colorData.dart';
 import 'package:bible/Provider/BookMarkList.dart';
 import 'package:bible/Provider/memoItems.dart';
 import 'package:bible/Provider/userSetting.dart';
 import 'package:bible/Utils/getChapter.dart';
-import 'package:bible/View/editMemo.dart';
 import 'package:bible/View/select_chapter.dart';
 import 'package:bible/View/setting.dart';
 import 'package:flutter/gestures.dart';
@@ -14,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Model/bible_list.dart';
 import '../Model/memoList.dart';
-import 'memo.dart';
 import 'select_bible.dart';
 import 'package:flutter/services.dart';
 
@@ -419,7 +416,7 @@ class _HomepageState extends State<Homepage> {
                       height: 10,
                     ),
                     Container(
-                      height: MediaQuery.of(context).size.height*0.3 + 20,
+                      height: MediaQuery.of(context).size.height*0.3,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                         border: Border.all(
@@ -434,81 +431,13 @@ class _HomepageState extends State<Homepage> {
                             padding: const EdgeInsets.fromLTRB(20, 20, 0, 10),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text("나만의 메모",style: TextStyle(
+                              children: const [
+                                Text("오늘의 말씀",style: TextStyle(
                                     fontSize: 25, fontWeight: FontWeight.bold,color: Color.fromRGBO(5, 35, 44, 1.0)
                                 )),
-                                IconButton(onPressed: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const Memo()));
-                                }, icon: const Icon(Icons.add,size: 25,))
                               ],
                             ),
                           ),
-                          context.watch<MemoItems>().results.isNotEmpty ? Container(
-                              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                              //color: Colors.grey,
-                              height: MediaQuery.of(context).size.height*0.2 + 20,
-                              child: GridView.builder(gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount:3,
-                                childAspectRatio: 1,
-                                mainAxisSpacing: 10,
-                                crossAxisSpacing: 10,
-                              ), itemBuilder: (context,index) => GestureDetector(
-                                onTap: (){
-                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> EditMemo(title: context.read<MemoItems>().results[index].title,content: context.read<MemoItems>().results[index].content,id: context.read<MemoItems>().results[index].id,)));
-                                },
-                                child: GestureDetector(
-                                  onLongPress: (){
-                                    showDialog(context: context, builder: (BuildContext context){
-                                      return AlertDialog(
-                                        content: const Text("메모를 삭제하시겠습니까?"),
-                                        actions: [
-                                          TextButton(
-                                            child: const Text("확인",style:TextStyle(fontSize: 18,color: Color.fromRGBO(5, 35, 44, 1.0))),
-                                            onPressed: () {
-                                              dhMemo.deleteMemoList(memoList[index].id);
-                                              getDatabase(context);
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                          TextButton(
-                                              onPressed: (){
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text("취소",style: TextStyle(fontSize: 18,color: Color.fromRGBO(5, 35, 44, 1.0)))
-                                          )
-
-                                        ],
-                                      );
-                                    });
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        boxShadow:[
-                                          BoxShadow(
-                                            color: colorData[index>=colorData.length?index-colorData.length:index],
-                                            spreadRadius: 0,
-                                            blurRadius: 0,
-                                          )
-                                        ],
-                                        borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const SizedBox(),
-                                            Text(context.watch<MemoItems>().results[index].title,style: const TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),
-                                            Text(getDate(context.watch<MemoItems>().results[index].setTime),style: const TextStyle(fontSize: 10, color: Colors.black),),
-                                            const SizedBox()
-                                          ],
-                                        )
-                                    ),
-                                  ),
-                                ),
-                              ),itemCount: context.watch<MemoItems>().results.length,dragStartBehavior: DragStartBehavior.start,)
-                          ) : Container( height:MediaQuery.of(context).size.height*0.2 - 35,child: const Center(child: Text("등록된 메모가 없습니다"),),)
                         ],
                       ),
                     ),

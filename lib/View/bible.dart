@@ -96,7 +96,7 @@ class _BibleState extends State<Bible> {
                             ],
                           ),
                           SizedBox(
-                            height: mediaHeight * 0.4 + 70,
+                            height: mediaHeight * 0.45,
                             child: ShaderMask(
                               child: ListView.builder(itemBuilder: (BuildContext context, int index) {
                                 return Container(
