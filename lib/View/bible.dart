@@ -31,10 +31,14 @@ class _BibleState extends State<Bible> {
   late int bibleChapter;
   late String bibleTitle;
   late int biblePassenger;
+  late String bibleChapterToKorean;
 
   late List<Object> data;
   late int verseLength;
   late int chapterLength;
+  late double cWidth;
+  late double mediaWidth;
+  late double mediaHeight;
 
   @override
   void initState() {
@@ -43,7 +47,14 @@ class _BibleState extends State<Bible> {
 
     bibleChapter = widget.bibleChapter;
     bibleTitle = widget.bibleTitle;
+
     biblePassenger = widget.biblePassenger;
+
+    if(bibleTitle == '시편'){
+      bibleChapterToKorean = "편";
+    }else{
+      bibleChapterToKorean = "장";
+    }
 
     data = bible!["${bibleChapter+1}장"];
     verseLength = bible!["${bibleChapter+1}장"].length;
@@ -60,10 +71,9 @@ class _BibleState extends State<Bible> {
   @override
   Widget build(BuildContext context) {
 
-    double cWidth = MediaQuery.of(context).size.width*0.95;
-    double mediaWidth = MediaQuery.of(context).size.width;
-    double mediaHeight = MediaQuery.of(context).size.height;
-
+    cWidth = MediaQuery.of(context).size.width*0.95;
+    mediaWidth = MediaQuery.of(context).size.width;
+    mediaHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(
@@ -74,7 +84,7 @@ class _BibleState extends State<Bible> {
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("$bibleTitle ${bibleChapter+1} 장",style: const TextStyle(color:Color.fromRGBO(137, 136, 125, 1.0) , fontSize:25,fontWeight: FontWeight.w500),),
+            Text("$bibleTitle ${bibleChapter+1} $bibleChapterToKorean",style: const TextStyle(color:Color.fromRGBO(137, 136, 125, 1.0) , fontSize:20,fontWeight: FontWeight.w500),),
             IconButton(onPressed: (){
               showModalBottomSheet(context: context, builder: (BuildContext context){
                 return SizedBox(
@@ -91,7 +101,7 @@ class _BibleState extends State<Bible> {
                                 onPressed: (){
                                   Navigator.pop(context);
                                 },
-                                icon: const Icon(Icons.close,size: 30 ,color: Colors.grey,),
+                                icon: const Icon(Icons.close,size: 29 ,color: Colors.grey,),
                               )
                             ],
                           ),
@@ -106,7 +116,7 @@ class _BibleState extends State<Bible> {
                                         children: [
                                           Text(bibleTitle,style: const TextStyle(fontSize: 25,fontWeight: FontWeight.w600,color:Color.fromRGBO(5, 35, 44, 1.0))),
                                           const SizedBox(width: 15,),
-                                          Text("${index+1} 장", style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w600,color:Color.fromRGBO(5, 35, 44, 1.0)))
+                                          Text("${index+1} $bibleChapterToKorean", style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w600,color:Color.fromRGBO(5, 35, 44, 1.0)))
                                         ],
                                       ),
                                       onTap: (){
@@ -140,7 +150,7 @@ class _BibleState extends State<Bible> {
                     )
                 );
               });
-            }, icon: const Icon(Icons.expand_more),iconSize: 25,color: const Color.fromRGBO(137, 136, 125, 1.0),),
+            }, icon: const Icon(Icons.expand_more),iconSize: 24,color: const Color.fromRGBO(137, 136, 125, 1.0),),
           ],
         ),
         iconTheme: const IconThemeData(

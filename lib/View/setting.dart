@@ -186,9 +186,9 @@ class _user_settings_pageState extends State<user_settings_page> {
                   selectedColor: Colors.white,
                   fillColor: Colors.orangeAccent[200],
                   color: Colors.orangeAccent[400],
-                  constraints: const BoxConstraints(
+                  constraints: BoxConstraints(
                     minHeight: 40.0,
-                    minWidth: 120.0,
+                    minWidth: 90.0,
                   ),
                   isSelected: selectStyle,
                   children: fontShape,

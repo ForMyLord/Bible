@@ -10,7 +10,6 @@ class setFontSize with ChangeNotifier {
   }
 
   addFontNum() {
-
     if(i > 45){
       return;
     }else{
@@ -19,7 +18,6 @@ class setFontSize with ChangeNotifier {
     }
   }
   minusFontNum() {
-
     if(i < 25){
       return;
     }else{

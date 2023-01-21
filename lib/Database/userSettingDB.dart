@@ -23,7 +23,7 @@ class DBHelperSetting {
 
     // 앱 시작시 기본 폰트로 지정하기
     final db = await database;
-    db.insert(tableName, userSettingDatas(fontSize: 20, fontStyle: '').toMap());
+    db.insert(tableName, userSettingDatas(fontSize: 20, fontStyle: 'SongMyung').toMap());
   }
 
   Future<void> changeUserSettingValue(userSettingDatas userSettingData) async {

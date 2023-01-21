@@ -1,22 +1,21 @@
 import 'package:bible/Provider/BookMarkList.dart';
-import 'package:bible/Provider/memoItems.dart';
 import 'package:bible/Provider/userSetting.dart';
 import 'package:bible/View/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 void main() {
   runApp(
     MultiProvider(providers:[
       ChangeNotifierProvider(create: (_)=> BookMarkList()),
-      ChangeNotifierProvider(create: (_)=> MemoItems()),
       ChangeNotifierProvider(create: (_)=> setFontSize()),
       ChangeNotifierProvider(create: (_)=> setFontStyle())
     ],
     child: const MyApp(),
     ),
   );
+
+
 }
 
 class MyApp extends StatelessWidget {
@@ -26,6 +25,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        builder:(context,child){
+          return MediaQuery(
+            child: child!,
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0)
+          );
+        },
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
