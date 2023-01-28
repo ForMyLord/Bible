@@ -14,8 +14,6 @@ void main() {
     child: const MyApp(),
     ),
   );
-
-
 }
 
 class MyApp extends StatelessWidget {

@@ -30,8 +30,9 @@ class _SelectBibleState extends State<SelectBible> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
+        height: MediaQuery.of(context).size.height,
         color: const Color.fromRGBO(253, 250, 245, 1.0),
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
         child: GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
@@ -42,18 +43,21 @@ class _SelectBibleState extends State<SelectBible> {
           itemCount: bible.length,
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
-              child: Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(9.0)
-                ),
-                elevation: 3.0,
-                child: Padding(
-                  padding: const EdgeInsets.all(7),
-                  child: Center(
-                    child: Text(
-                      bible[index],style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.w600
-                    ),
+              child: Container(
+                margin: EdgeInsets.only(bottom: 3),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(9.0)
+                  ),
+                  elevation: 3.0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(7),
+                    child: Center(
+                      child: Text(
+                        bible[index],style: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.w600
+                      ),
+                      ),
                     ),
                   ),
                 ),

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.bible">
+    package="com.bibleR.bible">
    <application
         android:label="바이블러"
         android:name="${applicationName}"

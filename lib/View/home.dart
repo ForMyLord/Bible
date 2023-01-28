@@ -296,7 +296,7 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
                 Container(
-                    height: deviceHeight*0.72,
+                    height: deviceHeight*0.77,
                     child: SingleChildScrollView(
                       child:
                       Column(
@@ -439,7 +439,6 @@ class _HomepageState extends State<Homepage> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 10,)
                         ],
                       ),
                     )

@@ -76,6 +76,7 @@ class _BibleState extends State<Bible> {
     mediaHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      backgroundColor: Color.fromRGBO(253, 250, 245, 1.0),
       appBar: AppBar(
         elevation: 0,
         bottom: PreferredSize(
@@ -114,7 +115,7 @@ class _BibleState extends State<Bible> {
                                     child:GestureDetector(
                                       child:  Row(
                                         children: [
-                                          Text(bibleTitle,style: const TextStyle(fontSize: 25,fontWeight: FontWeight.w600,color:Color.fromRGBO(5, 35, 44, 1.0))),
+                                          Text(bibleTitle,style: const TextStyle(fontSize: 20,fontWeight: FontWeight.w600,color:Color.fromRGBO(5, 35, 44, 1.0))),
                                           const SizedBox(width: 15,),
                                           Text("${index+1} $bibleChapterToKorean", style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w600,color:Color.fromRGBO(5, 35, 44, 1.0)))
                                         ],
@@ -169,7 +170,7 @@ class _BibleState extends State<Bible> {
       ),
       body: SafeArea(
         child: Container(
-          color: const Color.fromRGBO(253, 250, 245, 1.0),
+
           width: cWidth,
             child: ShaderMask(
               shaderCallback: (Rect bounds) {
