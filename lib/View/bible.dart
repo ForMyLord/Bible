@@ -85,7 +85,7 @@ class _BibleState extends State<Bible> {
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("$bibleTitle ${bibleChapter+1} $bibleChapterToKorean",style: const TextStyle(color:Color.fromRGBO(137, 136, 125, 1.0) , fontSize:20,fontWeight: FontWeight.w500),),
+            Text("$bibleTitle ${bibleChapter+1} $bibleChapterToKorean",style: const TextStyle(color:Color.fromRGBO(137, 136, 125, 1.0) , fontSize:24,fontWeight: FontWeight.w500),),
             IconButton(onPressed: (){
               showModalBottomSheet(context: context, builder: (BuildContext context){
                 return SizedBox(
@@ -115,7 +115,7 @@ class _BibleState extends State<Bible> {
                                     child:GestureDetector(
                                       child:  Row(
                                         children: [
-                                          Text(bibleTitle,style: const TextStyle(fontSize: 20,fontWeight: FontWeight.w600,color:Color.fromRGBO(5, 35, 44, 1.0))),
+                                          Text(bibleTitle,style: const TextStyle(fontSize: 25,fontWeight: FontWeight.w600,color:Color.fromRGBO(5, 35, 44, 1.0))),
                                           const SizedBox(width: 15,),
                                           Text("${index+1} $bibleChapterToKorean", style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w600,color:Color.fromRGBO(5, 35, 44, 1.0)))
                                         ],
@@ -169,8 +169,8 @@ class _BibleState extends State<Bible> {
         ],
       ),
       body: SafeArea(
+        bottom: false,
         child: Container(
-
           width: cWidth,
             child: ShaderMask(
               shaderCallback: (Rect bounds) {
