@@ -1,6 +1,9 @@
 # Bible 📖
 빠른 검색 성경 앱
 
+iOS 앱 이름 : bibler
+Android 앱 이름 : 바이블러
+
 ## 기능
 
 [1] 빠른 성경 검색
@@ -25,3 +28,9 @@ https://user-images.githubusercontent.com/69062776/214450508-1ef79148-e920-4836-
 
 https://user-images.githubusercontent.com/69062776/214450687-c86329f9-a346-4a47-bd66-03d0da683f13.mov
 
+
+[4] Version
+
+v1.0.1
+- 나훔, 요나 말씀 안나오는 버그 수정
+- 말씀 보는 페이지 Scaffold background color 변경
